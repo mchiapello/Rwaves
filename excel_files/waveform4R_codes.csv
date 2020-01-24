@@ -1,0 +1,22 @@
+Sort;Acronym;formula (number=waveforms);notes
+1;n_Np;"total number of ""1""";
+2;s_np;"total duration of ""1""";
+4;s_2np;"duration of the 2nd ""1"" wave";
+14;n_Pr;number of probes;"everything between two ""1"" waves is a probe; it is possible that at the end of the recording a probe is still ongoing, so there is no ""1"" wave after"
+24;s_Pr;total recording time - total duration of 1;
+29;s_C;total duration of 2;
+67;s_F;total duration of 6;
+57;n_G;total number of 7;
+58;s_G;total duration of 7;
+115;%probtimeinC;(total duration of 2/total duration of the recording)*100;
+116;%probtimeinF;(total duration of 6/total duration of the recording)*100;
+117;%probtimeinG;(total duration of 7/total duration of the recording)*100;
+75;n_E1;;
+78;s_E1;;
+;n_phloemph;;
+90;n_sE2;;
+95;E2index;;
+96;s_E;;
+98;s_nE;;
+107;t_LE1.Z;;
+118;%probtimeinE1;;
