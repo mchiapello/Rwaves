@@ -11,12 +11,12 @@
 #' @author Marco Chiapello <chiapello.m@gmail.com>
 #' @keywords IO, file
 #' @import methods utils stats readr
-readData <- function(infile, type = c("none", "trouvelot", "grid")) UseMethod("readData")
+readData <- function(infile, type = c("ANA")) UseMethod("readData")
 
-readData <- function(infile, type = c("none", "trouvelot", "grid")){
+readData <- function(infile, type = c("ANA")){
     type <- match.arg(type)
     if (type == "none"){
-        stop('You need to specify the data type! Use type = "trouvelot" or type = "grid"')
+        stop('You need to specify the data type!')
     }
     x <- suppressMessages(read_csv(infile))
     ## Genaral checks
