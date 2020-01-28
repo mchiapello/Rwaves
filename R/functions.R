@@ -9,10 +9,18 @@
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
 #' @keywords IO, file
-#' @import utils stats dplyr
-rwaves <- function(x) UseMethod("rwaves"){
-    x %>% 
+#' @import utils stats dplyr magrittr
+rwaves <- function(x) UseMethod("rwaves")
+
+rwaves <- function(x){
+    tmp <- x %>%
         dplyr::group_by(File) %>%
         tidyr::nest()
+
+    tmp %>%
+        dplyr::mutate(f1 = purrr::map(data, ~dplyr::count(.x, waveforms))) %>%
+#         tidyr::unnest(f1)
+
+
 }
 

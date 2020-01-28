@@ -16,5 +16,6 @@ Imports:
     purrr,
     fs,
     dplyr,
-    tidyr
+    tidyr,
+    magrittr
 RoxygenNote: 7.0.2
