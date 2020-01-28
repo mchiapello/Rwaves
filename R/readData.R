@@ -10,7 +10,7 @@
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
 #' @keywords IO, file
-#' @import methods utils stats readr
+#' @import methods utils stats readr fs
 readData <- function(path, estention = c("none", "ANA")) UseMethod("readData")
 
 readData <- function(path, estention = c("none", "ANA")){
