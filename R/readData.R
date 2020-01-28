@@ -11,21 +11,28 @@
 #' @author Marco Chiapello <chiapello.m@gmail.com>
 #' @keywords IO, file
 #' @import methods utils stats readr
-readData <- function(infile, type = c("ANA")) UseMethod("readData")
+readData <- function(path, estention = c("none", "ANA")) UseMethod("readData")
 
-readData <- function(infile, type = c("ANA")){
-    type <- match.arg(type)
-    if (type == "none"){
-        stop('You need to specify the data type!')
+readData <- function(path, estention = c("none", "ANA")){
+    estention <- match.arg(estention)
+    if (estention == "none"){
+        stop('You need to specify the data estention!')
     }
-    x <- suppressMessages(read_csv(infile))
+    f <- fs::dir_ls(path, regex = "converted")
+    x <- suppressMessages(purrr::map_df(f, readr::read_delim, delim = "\t",
+                                        col_names = FALSE, .id = "File"))
     ## Genaral checks
     if (any(is.na(x))) {
             stop("The datasets contains NAs")
     }
-    if (dim(x)[2] < 3){
+    if (ncol(x) != 4){
         x <- NULL
-        stop("Incorrect dimentions: the dataset should contain at least 3 columns")
+        stop("Incorrect dimentions: the dataset should contain at 4 columns")
     }
-    ## Trouvelot specific checks
-    if (type == "trouvelot"){
+    ## Modify the table
+    ### Remove the fourth column
+    x  <- x[-ncol(x)]
+    ### Rename the columns
+    names(x) <- c("File", "waveforms", "time")
+    return(x)
+}
