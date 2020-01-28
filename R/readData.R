@@ -1,19 +1,18 @@
 #' Read data in form a folder
 #'
-#' @usage readData(path = ".", estention = c("ANA"))
+#' @usage readData(path = ".", estention = c("none", "ANA"))
 #' @param path The path to folder containing the data files
 #' @param estention The files estention identified the type of program produced the output
 #' @example
 #' f <- dir(system.file("data", package = "Rwaves"))
 #' readData(f, "ANA")
-#' @return an object of class \code{ana}
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
 #' @keywords IO, file
-#' @import methods utils stats readr fs
-readData <- function(path, estention = c("none", "ANA")) UseMethod("readData")
+#' @import utils stats readr fs
+readData <- function(path = ".", estention = c("none", "ANA")) UseMethod("readData")
 
-readData <- function(path, estention = c("none", "ANA")){
+readData <- function(path = ".", estention = c("none", "ANA")){
     estention <- match.arg(estention)
     if (estention == "none"){
         stop('You need to specify the data estention!')

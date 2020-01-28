@@ -2,7 +2,6 @@
 
 export(readData)
 import(fs)
-import(methods)
 import(readr)
 import(stats)
 import(utils)

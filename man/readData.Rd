@@ -4,15 +4,12 @@
 \alias{readData}
 \title{Read data in form a folder}
 \usage{
-readData(path = ".", estention = c("ANA"))
+readData(path = ".", estention = c("none", "ANA"))
 }
 \arguments{
 \item{path}{The path to folder containing the data files}
 
 \item{estention}{The files estention identified the type of program produced the output}
-}
-\value{
-an object of class \code{ana}
 }
 \description{
 Read data in form a folder
