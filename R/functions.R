@@ -1,15 +1,12 @@
 #' Compute the parameters
 #'
-#' @usage readData(path = ".", estention = c("none", "ANA"))
-#' @param path The path to folder containing the data files
-#' @param estention The files estention identified the type of program produced the output
+#' @usage rwaves(x)
+#' @param x it is the object read using the rwaves::readData function
 #' @example
-#' f <- dir(system.file("data", package = "Rwaves"))
-#' readData(f, "ANA")
+#' rwaves(x)
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
-#' @keywords IO, file
-#' @import utils stats dplyr magrittr
+#' @import utils stats dplyr magrittr tidyr
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){

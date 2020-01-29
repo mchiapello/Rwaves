@@ -4,18 +4,19 @@
 \alias{rwaves}
 \title{Compute the parameters}
 \usage{
-readData(path = ".", estention = c("none", "ANA"))
+rwaves(x)
+
+rwaves(x)
 }
 \arguments{
-\item{path}{The path to folder containing the data files}
-
-\item{estention}{The files estention identified the type of program produced the output}
+\item{x}{it is the object read using the rwaves::readData function}
 }
 \description{
 Compute the parameters
+
+everything between two "1" waves is a probe; it is possible that at the end
+of the recording a probe is still ongoing, so there is no "1" wave after
 }
 \author{
 Marco Chiapello <chiapello.m@gmail.com>
 }
-\keyword{IO,}
-\keyword{file}
