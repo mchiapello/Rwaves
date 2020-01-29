@@ -23,55 +23,72 @@ rwaves <- function(x){
         dplyr::mutate(f3 = purrr::map(data, ~ff3(.x, 1))) %>%
         dplyr::mutate(f14 = purrr::map(data, ~ff14(.x))) %>%
         dplyr::mutate(f24 = purrr::map(data, ~ff24(.x))) %>%
-        tidyr::unnest(f1:f24)
-
-
-
+        dplyr::mutate(f29 = purrr::map(data, ~ff2(.x, 2))) %>%
+        dplyr::mutate(f67 = purrr::map(data, ~ff2(.x, 6))) %>%
+        dplyr::mutate(f57 = purrr::map(data, ~ff1(.x, 7))) %>%
+        dplyr::mutate(f58 = purrr::map(data, ~ff2(.x, 7))) %>%
+        tidyr::unnest(f1:f58)
 
 }
 
+# total number of "X"
 ff1 <- function(x, d = 1){
+    newname <- paste0("f1_", d)
     x %>%
         dplyr::count(waveforms) %>%
         dplyr::filter(waveforms == d) %>%
-        dplyr::select(f1 = n)
+        dplyr::select(n) %>%
+        dplyr::rename(!!newname := n)
 }
 
+# total duration of "X"
 ff2 <- function(x, d = 1){
+    newname <- paste0("f2_", d)
     x$cum <- c(x$time[1], diff(x$time))
     x %>%
        dplyr::filter(waveforms == d) %>%
        dplyr::group_by(waveforms) %>%
        dplyr::summarize(Sum = sum(time)) %>%
-       dplyr::select(f2 = Sum)
+       dplyr::select(Sum) %>%
+       dplyr::rename(!!newname := Sum)
 }
 
+# duration of the 2nd "1" wave
 ff3 <- function(x, d = 1){
+    newname <- paste0("f3_", d)
     x$cum <- c(x$time[1], diff(x$time))
     x %>%
         dplyr::filter(waveforms == d) %>%
         dplyr::slice(2) %>%
-        dplyr::select(f3 = cum)
+        dplyr::select(cum) %>%
+        dplyr::rename(!!newname := cum)
 }
 
+# number of probes
+#' everything between two "1" waves is a probe; it is possible that at the end
+#' of the recording a probe is still ongoing, so there is no "1" wave after
 ff14 <- function(x){
+    newname <- paste0("f", 14)
     temp <- x$waveforms
     temp2 <- vector()
-    for(i in 1:(length(tmp)-2)){
-        if(tmp[i] == 1 & tmp[i+2] == 1){
-            tmp2 <- c(tmp2, 1)
+    for(i in 1:(length(temp)-2)){
+        if(temp[i] == 1 & temp[i+2] == 1){
+            temp2 <- c(temp2, 1)
         }
     }
-    sum(tmp2)
-#     tibble(f4 = sum(tmp2))
+    tibble(!!newname := sum(temp2))
 }
 
+# total recording time - total duration of 1
 ff24 <- function(x){
+    newname <- paste0("f", 24)
     x$cum <- c(x$time[1], diff(x$time))
     temp <- x %>%
        dplyr::filter(waveforms == 1) %>%
        dplyr::group_by(waveforms) %>%
        dplyr::summarize(Sum = sum(cum)) %>%
        dplyr::pull(Sum)
-   x$time[nrow(x)] - temp
+   tibble(!!newname := x$time[nrow(x)] - temp)
 }
+
+
