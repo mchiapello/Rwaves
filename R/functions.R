@@ -6,10 +6,13 @@
 #' rwaves(x)
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
-#' @import utils stats dplyr magrittr tidyr
+#' @import utils stats dplyr magrittr tidyq
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
+    ###########################################################################
+    # VARIABLES
+#     waveforms <- cum <- Sum <- File <- f1 <- f117 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"

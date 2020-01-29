@@ -1,3 +1,5 @@
+y <- rwaves(x)
+
 test_that("dimentions", {
   expect_equal(nrow(y), x %>% dplyr::count(File) %>% nrow)
   expect_equal(ncol(y), 14)
