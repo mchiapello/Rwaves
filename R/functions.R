@@ -6,7 +6,7 @@
 #' rwaves(x)
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
-#' @import utils stats dplyr magrittr tidyq
+#' @import utils stats dplyr magrittr tidyr
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){

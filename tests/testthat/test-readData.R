@@ -1,4 +1,4 @@
-x <- readData("../inst/extdata", "ANA")
+# x <- readData("../inst/extdata", "ANA")
 
 test_that("multiplication works", {
   expect_equal(sum(is.na(x$File)), 0)
