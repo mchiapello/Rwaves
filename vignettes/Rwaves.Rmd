@@ -1,0 +1,37 @@
+---
+title: "Rwaves"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rwaves}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Rwaves)
+```
+
+# Read data in
+
+In order to read the data in use the ANA format.
+
+```{r read}
+x <- readData("../inst/extdata", "ANA")
+```
+
+# Data analysis
+
+In order to obtain results do:
+
+```{r analysis}
+y <- rwaves(x)
+y
+```
+
