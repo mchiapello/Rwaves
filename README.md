@@ -5,4 +5,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/mchiapello/Rwaves?style=plastic)
 
 # Rwaves
-R package
+
+## Installation
+```r
+devtools::install_github("mchiapello/Rwaves")
+```
