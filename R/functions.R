@@ -45,7 +45,7 @@ rwaves <- function(x){
     # total duration of "X"
     ff2 <- function(x, d = 1){
         newname <- paste0("f2_", d)
-        x$cum <- c(x$time[1], diff(x$time))
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
         x %>%
            dplyr::filter(waveforms == d) %>%
            dplyr::group_by(waveforms) %>%
@@ -56,7 +56,7 @@ rwaves <- function(x){
     # duration of the 2nd "1" wave
     ff3 <- function(x, d = 1){
         newname <- paste0("f3_", d)
-        x$cum <- c(x$time[1], diff(x$time))
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
         x %>%
             dplyr::filter(waveforms == d) %>%
             dplyr::slice(2) %>%
