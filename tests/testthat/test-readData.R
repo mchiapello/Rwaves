@@ -1,4 +1,4 @@
-# x <- readData("../inst/extdata", "ANA")
+library(Rwaves)
 
 test_that("multiplication works", {
   expect_equal(sum(is.na(x$File)), 0)
@@ -16,3 +16,5 @@ test_that("values", {
 test_that("dimentions", {
    expect_equal(ncol(x), 3)
 })
+
+
