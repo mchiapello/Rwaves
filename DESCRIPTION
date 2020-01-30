@@ -9,11 +9,11 @@ Authors@R:c(
            comment = c(ORCID = "0000-0001-7768-3047")),
     person(given = "Matteo",
            family = "Ripamonti",
-           role = c("cre"),
-           email = "matteo.ripamonti@unito.it")
+           role = "aut",
+           email = "matteo.ripamonti@unito.it"),
     person(given = "Nicola",
            family = "Bodino",
-           role = c("cre"),
+           role = "aut",
            email = "nicola.bodino@ipsp.cnr.it"))
 Description: The package reads ANA data and calculate the defaults parameters.
 License: MIT + file LICENSE
