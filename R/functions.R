@@ -2,17 +2,33 @@
 #'
 #' @usage rwaves(x)
 #' @param x it is the object read using the rwaves::readData function
-#' @example
-#' rwaves(x)
+#' @examples
+#' rwaves(original)
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
-#' @import utils stats dplyr magrittr tidyr
+#' @import utils stats magrittr tidyr
+#' @importFrom dplyr group_by
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+#' @importFrom dplyr summarise
+#' @importFrom dplyr summarize
+#' @importFrom dplyr mutate
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr arrange
+#' @importFrom dplyr tibble
+#' @importFrom dplyr left_join
+#' @importFrom dplyr inner_join
+#' @importFrom dplyr pull
+#' @importFrom dplyr tbl_df
+#' @importFrom dplyr funs
+#' @importFrom dplyr vars
+#' @importFrom dplyr contains
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
     ###########################################################################
     # VARIABLES
-#     waveforms <- cum <- Sum <- File <- f1 <- f117 <- NULL
+    waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"

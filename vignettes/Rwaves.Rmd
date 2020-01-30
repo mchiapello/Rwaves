@@ -23,7 +23,8 @@ library(Rwaves)
 In order to read the data in use the ANA format.
 
 ```{r read}
-x <- readData("inst/extdata", "ANA")
+f <- system.file("extdata", package = "Rwaves")
+x <- readData(f, estention = "ANA")
 ```
 
 # Data analysis

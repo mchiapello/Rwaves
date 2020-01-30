@@ -2,7 +2,7 @@
 % Please edit documentation in R/readData.R
 \name{readData}
 \alias{readData}
-\title{Read data in form a folder}
+\title{Read data in from a folder}
 \usage{
 readData(path = ".", estention = c("none", "ANA"))
 }
@@ -12,7 +12,11 @@ readData(path = ".", estention = c("none", "ANA"))
 \item{estention}{The files estention identified the type of program produced the output}
 }
 \description{
-Read data in form a folder
+Read data in from a folder
+}
+\examples{
+f <- system.file("extdata", package = "Rwaves")
+x <- readData(f, estention = "ANA")
 }
 \author{
 Marco Chiapello <chiapello.m@gmail.com>

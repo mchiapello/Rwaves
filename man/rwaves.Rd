@@ -17,6 +17,9 @@ Compute the parameters
 everything between two "1" waves is a probe; it is possible that at the end
 of the recording a probe is still ongoing, so there is no "1" wave after
 }
+\examples{
+rwaves(original)
+}
 \author{
 Marco Chiapello <chiapello.m@gmail.com>
 }

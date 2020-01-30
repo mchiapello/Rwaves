@@ -8,7 +8,7 @@ Authors@R:
            email = "marco.chiapello@gmail.com",
            comment = c(ORCID = "0000-0001-7768-3047"))
 Description: What the package does (one paragraph).
-License: MIT License
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 

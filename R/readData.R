@@ -1,9 +1,11 @@
-#' Read data in form a folder
+#' Read data in from a folder
 #'
 #' @usage readData(path = ".", estention = c("none", "ANA"))
 #' @param path The path to folder containing the data files
 #' @param estention The files estention identified the type of program produced the output
-#' @example readData(dir(system.file("../inst/extdata/", package = "Rwaves")), "ANA")
+#' @examples 
+#' f <- system.file("extdata", package = "Rwaves")
+#' x <- readData(f, estention = "ANA")
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
 #' @keywords IO, file
