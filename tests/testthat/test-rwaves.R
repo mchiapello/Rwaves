@@ -1,21 +1,28 @@
 library(Rwaves)
 
+f <- system.file("extdata", package = "Rwaves")
+x <- readData(f, estention = "ANA")
+pr <- rwaves(x)
+
 test_that("dimentions", {
-  expect_equal(nrow(processed), original %>% dplyr::count(File) %>% nrow)
-  expect_equal(ncol(processed), 14)
+  expect_equal(nrow(pr), original %>% dplyr::count(File) %>% nrow)
+  expect_equal(ncol(pr), 14)
 })
 
-test_that("consistencprocessed", {
-  expect_gte(min(processed$f1_1), 0)
-  expect_gte(min(processed$f2_1), 0)
-  expect_gte(min(processed$f3_1), 0)
-  expect_gte(min(processed$f14), 0)
-  expect_gte(min(processed$f24), 0)
-  expect_gte(min(processed$f2_2), 0)
-  expect_gte(min(processed$f2_6), 0)
-  expect_gte(min(processed$f1_7), 0)
-  expect_gte(min(processed$f2_7), 0)
-  expect_gte(min(processed$f115_2), 0)
-  expect_gte(min(processed$f115_6), 0)
-  expect_gte(min(processed$f115_7), 0)
+test_that("consistencpr", {
+  expect_gte(min(pr$f1_1), 0)
+  expect_gte(min(pr$f2_1), 0)
+  expect_gte(min(pr$f3_1), 0)
+  expect_gte(min(pr$f14), 0)
+  expect_gte(min(pr$f24), 0)
+  expect_gte(min(pr$f2_2), 0)
+  expect_gte(min(pr$f2_6), 0)
+  expect_gte(min(pr$f1_7), 0)
+  expect_gte(min(pr$f2_7), 0)
+  expect_gte(min(pr$f115_2), 0)
+  expect_gte(min(pr$f115_6), 0)
+  expect_gte(min(pr$f115_7), 0)
 })
+
+
+
