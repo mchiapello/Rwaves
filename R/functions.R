@@ -6,7 +6,9 @@
 #' rwaves(original)
 #' @export
 #' @author Marco Chiapello <chiapello.m@gmail.com>
-#' @import utils stats magrittr tidyr
+#' @importFrom tidyr  nest
+#' @importFrom tidyr  unnest
+#' @importFrom magrittr %>%
 #' @importFrom dplyr group_by
 #' @importFrom dplyr filter
 #' @importFrom dplyr select

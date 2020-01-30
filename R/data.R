@@ -15,7 +15,6 @@
 #' Compute data
 #'
 #' A dataset containing the processed data
-#' The scoring system is ANA
 #'
 #' @format A data frame with 6 rows and 14 variables:
 #' \describe{
@@ -27,11 +26,12 @@
 #'   \item{f14}{number of probes}
 #'   \item{f24}{total recording time - total duration of 1}
 #'   \item{f2_2}{total duration of 2}
-#'   \item{f2_2}{total duration of 6}
+#'   \item{f2_6}{total duration of 6}
 #'   \item{f1_7}{total number of 7}
-#'   \item{f115_2}{%probtimeinC 2}
-#'   \item{f115_6}{%probtimeinC 6}
-#'   \item{f115_7}{%probtimeinC 7}
+#'   \item{f2_7}{total duration of 7}
+#'   \item{f115_2}{\% probtimeinC 2}
+#'   \item{f115_6}{\% probtimeinC 6}
+#'   \item{f115_7}{\% probtimeinC 7}
 #' }
 #' @source PhD Matteo Ripamonti
 "processed"
