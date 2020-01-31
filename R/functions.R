@@ -27,7 +27,7 @@
 #' @importFrom dplyr contains
 rwaves <- function(x) UseMethod("rwaves")
 
-rwaves <- function(x){
+mwaves <- function(x){
     ###########################################################################
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
@@ -79,7 +79,7 @@ rwaves <- function(x){
     ff24 <- function(x){
         newname <- paste0("f", 24)
         x$cum <- c(diff(x$time), x$time[length(x$time)])
-        temp <- (x %>% filter(waveforms != 99) %>% pull(cum) %>% sum()) - x %>%
+        temp <- (x %>% filter(waveforms != 99) %>% dplyr::pull(cum) %>% sum()) - x %>%
            dplyr::filter(waveforms == 1) %>%
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
@@ -90,7 +90,7 @@ rwaves <- function(x){
     ff115 <- function(x, d = 2){
         newname <- paste0("f115_", d)
         x$cum <- c(diff(x$time), x$time[length(x$time)])
-        tt <- (x %>% filter(waveforms != 99) %>% pull(cum) %>% sum()) - x %>%
+        tt <- (x %>% filter(waveforms != 99) %>% dplyr::pull(cum) %>% sum()) - x %>%
            dplyr::filter(waveforms == 1) %>%
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
