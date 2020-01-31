@@ -80,7 +80,7 @@ rwaves <- function(x){
     # total recording time - total duration of 1
     ff24 <- function(x){
         newname <- paste0("f", 24)
-        x$cum <- c(x$time[1], diff(x$time))
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
         temp <- x %>%
            dplyr::filter(waveforms == 1) %>%
            dplyr::group_by(waveforms) %>%
@@ -91,13 +91,18 @@ rwaves <- function(x){
     # %probtimeinC
     ff115 <- function(x, d = 2){
         newname <- paste0("f115_", d)
-        x$cum <- c(x$time[1], diff(x$time))
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        tt <- (x %>% filter(waveforms != 99) %>% pull(cum) %>% sum()) - x %>%
+           dplyr::filter(waveforms == 1) %>%
+           dplyr::group_by(waveforms) %>%
+           dplyr::summarize(Sum = sum(cum)) %>%
+           dplyr::pull(Sum)
         temp <- x %>%
            dplyr::filter(waveforms == d) %>%
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
            dplyr::pull(Sum)
-       tibble(!!newname := temp / x$time[nrow(x)] * 100)
+       tibble(!!newname := temp / tt * 100)
     }
     ###########################################################################
     # FUNCTION
