@@ -1,3 +1,7 @@
+# Rwaves 0.0.4
+
+* Implement the rwaves fx to work in cases when there are missing waves
+
 # Rwaves 0.0.3
 
 * Fix probing number 

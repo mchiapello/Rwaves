@@ -27,7 +27,7 @@
 #' @importFrom dplyr contains
 rwaves <- function(x) UseMethod("rwaves")
 
-mwaves <- function(x){
+rwaves <- function(x){
     ###########################################################################
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
@@ -36,32 +36,44 @@ mwaves <- function(x){
         # total number of "X"
     ff1 <- function(x, d = 1){
         newname <- paste0("f1_", d)
-        x %>%
+        out <- x %>%
             dplyr::count(waveforms) %>%
             dplyr::filter(waveforms == d) %>%
             dplyr::select(n) %>%
             dplyr::rename(!!newname := n)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
     }
     # total duration of "X"
     ff2 <- function(x, d = 1){
         newname <- paste0("f2_", d)
         x$cum <- c(diff(x$time), x$time[length(x$time)])
-        x %>%
+        out <- x %>%
            dplyr::filter(waveforms == d) %>%
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
            dplyr::select(Sum) %>%
            dplyr::rename(!!newname := Sum)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
     }
     # duration of the 2nd "1" wave
     ff3 <- function(x, d = 1){
         newname <- paste0("f3_", d)
         x$cum <- c(diff(x$time), x$time[length(x$time)])
-        x %>%
+        out <- x %>%
             dplyr::filter(waveforms == d) %>%
             dplyr::slice(2) %>%
             dplyr::select(cum) %>%
             dplyr::rename(!!newname := cum)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
     }
     # number of probes
     #' everything between two "1" waves is a probe; it is possible that at the end
@@ -100,7 +112,12 @@ mwaves <- function(x){
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
            dplyr::pull(Sum)
-       dplyr::tibble(!!newname := temp / tt * 100)
+       if(length(temp) == 0){
+           out <- dplyr::tibble(!!newname := 0)
+       } else {
+           out <- dplyr::tibble(!!newname := temp / tt * 100)
+       }
+       return(out)
   }
     ###########################################################################
     # FUNCTION
