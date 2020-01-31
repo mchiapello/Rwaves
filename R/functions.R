@@ -79,12 +79,12 @@ rwaves <- function(x){
     ff24 <- function(x){
         newname <- paste0("f", 24)
         x$cum <- c(diff(x$time), x$time[length(x$time)])
-        temp <- x %>%
+        temp <- (x %>% filter(waveforms != 99) %>% pull(cum) %>% sum()) - x %>%
            dplyr::filter(waveforms == 1) %>%
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
            dplyr::pull(Sum)
-       dplyr::tibble(!!newname := x$time[nrow(x)] - temp)
+       dplyr::tibble(!!newname := temp)
     }
     # %probtimeinC
     ff115 <- function(x, d = 2){
@@ -101,7 +101,7 @@ rwaves <- function(x){
            dplyr::summarize(Sum = sum(cum)) %>%
            dplyr::pull(Sum)
        dplyr::tibble(!!newname := temp / tt * 100)
-q   }
+  }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
