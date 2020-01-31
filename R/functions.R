@@ -69,13 +69,11 @@ rwaves <- function(x){
     ff14 <- function(x){
         newname <- paste0("f", 14)
         temp <- x$waveforms
-        temp2 <- vector()
-        for(i in 1:(length(temp)-2)){
-            if(temp[i] == 1 & temp[i+2] == 1){
-                temp2 <- c(temp2, 1)
-            }
+        if(temp[length(temp) -1] == 1){
+            dplyr::tibble(!!newname := (sum(temp == 1) - 1))
+        } else{
+            dplyr::tibble(!!newname := sum(temp == 1))
         }
-        tibble(!!newname := sum(temp2))
     }
     # total recording time - total duration of 1
     ff24 <- function(x){
@@ -86,7 +84,7 @@ rwaves <- function(x){
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
            dplyr::pull(Sum)
-       tibble(!!newname := x$time[nrow(x)] - temp)
+       dplyr::tibble(!!newname := x$time[nrow(x)] - temp)
     }
     # %probtimeinC
     ff115 <- function(x, d = 2){
@@ -102,8 +100,8 @@ rwaves <- function(x){
            dplyr::group_by(waveforms) %>%
            dplyr::summarize(Sum = sum(cum)) %>%
            dplyr::pull(Sum)
-       tibble(!!newname := temp / tt * 100)
-    }
+       dplyr::tibble(!!newname := temp / tt * 100)
+q   }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
