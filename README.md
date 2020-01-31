@@ -4,7 +4,7 @@
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/mchiapello/Rwaves?sort=semver&style=plastic)
 ![GitHub last commit](https://img.shields.io/github/last-commit/mchiapello/Rwaves?style=plastic)
 
-# Rwaves
+# Rwaves  <img src="inst/logo/test.png" align="right" alt="" width="120" />
 
 ## Installation
 ```r
