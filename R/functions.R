@@ -139,6 +139,6 @@ rwaves <- function(x){
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
         dplyr::mutate(f116 = purrr::map(data, ~ff115(.x, 6))) %>%
         dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
-        tidyr::unnest(f1:f117)
+        tidyr::unnest(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117)
 }
 
