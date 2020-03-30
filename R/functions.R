@@ -99,6 +99,15 @@ rwaves <- function(x){
            dplyr::pull(Sum)
        tibble(!!newname := temp / x$time[nrow(x)] * 100)
     }
+    # NUmber of 5 longer than 10 minutes
+    ff90 <- function(x, d = 5){
+        newname <- paste0("ff90_", d)
+        x %>%
+            dplyr::count(waveforms) %>%
+            dplyr::filter(waveforms == d) %>%
+            dplyr::select(n) %>%
+            dplyr::rename(!!newname := n)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -119,6 +128,8 @@ rwaves <- function(x){
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
         dplyr::mutate(f116 = purrr::map(data, ~ff115(.x, 6))) %>%
         dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
+        dplyr::mutate(f75 = purrr::map(data, ~ff1(.x, 4))) %>%
+        dplyr::mutate(f78 = purrr::map(data, ~ff2(.x, 4))) %>%
         tidyr::unnest(f1:f117)
 }
 
