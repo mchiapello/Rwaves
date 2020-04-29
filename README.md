@@ -10,3 +10,5 @@
 ```r
 devtools::install_github("mchiapello/Rwaves")
 ```
+
+##follow the vignette
