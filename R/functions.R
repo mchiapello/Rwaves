@@ -133,11 +133,14 @@ rwaves <- function(x){
         dplyr::mutate(f14 = purrr::map(data, ~ff14(.x))) %>%
         dplyr::mutate(f24 = purrr::map(data, ~ff24(.x))) %>%
         dplyr::mutate(f29 = purrr::map(data, ~ff2(.x, 2))) %>%
-        dplyr::mutate(f67 = purrr::map(data, ~ff2(.x, 6))) %>%
         dplyr::mutate(f57 = purrr::map(data, ~ff1(.x, 7))) %>%
         dplyr::mutate(f58 = purrr::map(data, ~ff2(.x, 7))) %>%
+        dplyr::mutate(f75 = purrr::map(data, ~ff1(.x, 4))) %>%
+        dplyr::mutate(f78 = purrr::map(data, ~ff2(.x, 4))) %>%
+        dplyr::mutate(f91 = purrr::map(data, ~ff2(.x, 5))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
-        dplyr::mutate(f116 = purrr::map(data, ~ff115(.x, 6))) %>%
+        dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
+        dplyr::mutate(f119 = purrr::map(data, ~ff115(.x, 5))) %>%
         dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
       #  tidyr::unnest(c(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117))
         tidyr::unnest(f1:f117)
