@@ -14,6 +14,7 @@ readData <- function(path = ".", estention = c("none", "ANA")) UseMethod("readDa
 
 readData <- function(path = ".", estention = c("none", "ANA")){
     estention <- match.arg(estention)
+    File <- time <- waveforms <- NULL
     if (estention == "none"){
         stop('You need to specify the data estention!')
     }
@@ -33,5 +34,13 @@ readData <- function(path = ".", estention = c("none", "ANA")){
     x  <- x[-ncol(x)]
     ### Rename the columns
     names(x) <- c("File", "waveforms", "time")
+    # Check that the last number in waveforms column is 99
+    tmp <- x %>% dplyr::group_by(File) %>% 
+            dplyr::top_n(1, time) 
+    if (any(tmp %>% dplyr::pull(waveforms) != 99)){
+        stop(paste0("The last number of each dataset should be 99.\n",
+                    "The file(s) ", tmp %>% dplyr::filter(waveforms != 99) %>% dplyr::pull(File),
+                    " do(es) not contain 99 as last waveform score"))
+    } 
     return(x)
 }

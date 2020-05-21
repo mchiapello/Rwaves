@@ -1,13 +1,21 @@
 Package: Rwaves
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
+Title: Electropenetrography (EPG) data analysis
+Version: 0.0.4
+Authors@R: c( 
     person(given = "Marco",
            family = "Chiapello",
            role = c("aut", "cre"),
            email = "marco.chiapello@gmail.com",
-           comment = c(ORCID = "0000-0001-7768-3047"))
-Description: What the package does (one paragraph).
+           comment = c(ORCID = "0000-0001-7768-3047")),
+    person(given = "Matteo",
+           family = "Ripamonti",
+           role = "aut",
+           email = "matteo.ripamonti@unito.it"),
+    person(given = "Nicola",
+           family = "Bodino",
+           role = "aut",
+           email = "nicola.bodino@ipsp.cnr.it"))
+Description: The package reads ANA data and calculate the defaults parameters.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
