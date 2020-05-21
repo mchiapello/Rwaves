@@ -4,12 +4,14 @@
 \name{original}
 \alias{original}
 \title{Original data}
-\format{A data frame with 1800 rows and 3 variables:
+\format{
+A data frame with 1800 rows and 3 variables:
 \describe{
   \item{File}{Sample identifier}
   \item{waveforms}{Waveform scoring}
   \item{time}{waveforms duration}
-}}
+}
+}
 \source{
 PhD Matteo Ripamonti
 }
