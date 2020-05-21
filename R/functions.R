@@ -31,6 +31,7 @@ rwaves <- function(x){
     ###########################################################################
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
+    index1 <- index2 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -136,7 +137,7 @@ rwaves <- function(x){
        }
        return(out)
     }
-    # total duration of 5
+    # Number of waveform 5 longer of 10 minutes
     ff90 <- function(x){
         newname <- paste0("f90_5")
         x$cum <- c(diff(x$time), x$time[length(x$time)])
@@ -146,10 +147,15 @@ rwaves <- function(x){
                               TRUE ~ 3)) %>%
     dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
     tidyr::fill(index1) %>%
-    dplyr::mutate(index2 = ifelse(index1 == 1 & dplyr::lead(index1 == 0), 1, 0)) %>%
-    dplyr::filter(index1 == 1) %>%
-    dplyr::summarise(Sum = sum(cum, na.rm = TRUE)) %>%
-    dplyr::rename(!!newname := Sum)
+    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+    dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                     rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+    dplyr::group_by(id) %>%
+    dplyr::summarise(sv = sum(cum)) %>%
+    dplyr::filter(!is.na(id),
+           sv >= 600) %>%
+    dplyr::count() %>%
+    dplyr::rename(!!newname := n)
        if(nrow(out) == 0){
            out[1, 1] <- 0
        }
