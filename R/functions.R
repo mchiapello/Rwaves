@@ -119,6 +119,42 @@ rwaves <- function(x){
        }
        return(out)
   }
+   # total number of 5
+    ff89 <- function(x){
+        newname <- paste0("f89_5")
+        out <- x %>%
+    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                              waveforms == 2 ~ 0,
+                              TRUE ~ 3)) %>%
+    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+    tidyr::fill(index1) %>%
+    dplyr::mutate(index2 = ifelse(index1 == 1 & dplyr::lead(index1 == 0), 1, 0)) %>%
+    dplyr::summarise(Sum = sum(index2, na.rm = TRUE)) %>%
+    dplyr::rename(!!newname := Sum)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+    # total duration of 5
+    ff90 <- function(x){
+        newname <- paste0("f90_5")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                              waveforms == 2 ~ 0,
+                              TRUE ~ 3)) %>%
+    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+    tidyr::fill(index1) %>%
+    dplyr::mutate(index2 = ifelse(index1 == 1 & dplyr::lead(index1 == 0), 1, 0)) %>%
+    dplyr::filter(index1 == 1) %>%
+    dplyr::summarise(Sum = sum(cum, na.rm = TRUE)) %>%
+    dplyr::rename(!!newname := Sum)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -137,6 +173,8 @@ rwaves <- function(x){
         dplyr::mutate(f58 = purrr::map(data, ~ff2(.x, 7))) %>%
         dplyr::mutate(f75 = purrr::map(data, ~ff1(.x, 4))) %>%
         dplyr::mutate(f78 = purrr::map(data, ~ff2(.x, 4))) %>%
+        dplyr::mutate(f89 = purrr::map(data, ~ff89(.x))) %>%
+        dplyr::mutate(f90 = purrr::map(data, ~ff90(.x))) %>%
         dplyr::mutate(f91 = purrr::map(data, ~ff2(.x, 5))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
         dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
