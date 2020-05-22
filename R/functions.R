@@ -125,10 +125,11 @@ rwaves <- function(x){
         newname <- paste0("f89_5")
         out <- x %>%
     dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                              waveforms == 2 ~ 0,
+                              waveforms %in% c(2, 99) ~ 0,
                               TRUE ~ 3)) %>%
     dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
     tidyr::fill(index1) %>%
+    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
     dplyr::mutate(index2 = ifelse(index1 == 1 & dplyr::lead(index1 == 0), 1, 0)) %>%
     dplyr::summarise(Sum = sum(index2, na.rm = TRUE)) %>%
     dplyr::rename(!!newname := Sum)
