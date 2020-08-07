@@ -31,7 +31,7 @@ rwaves <- function(x){
     ###########################################################################
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
-    index1 <- index2 <- id <- sv <- d <- NULL
+    index1 <- index2 <- id <- sv <- d <- f24 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -243,6 +243,40 @@ rwaves <- function(x){
        }
        return(out)
     }
+        # Total duration of "5"
+    ff91 <- function(x){
+        newname <- paste0("f91")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+            dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                      waveforms %in% c(2, 99) ~ 0,
+                                      TRUE ~ 3)) %>%
+            dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+            tidyr::fill(index1) %>%
+            dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+            dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                             rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+            dplyr::group_by(id) %>%
+            dplyr::summarise(sv = sum(cum)) %>%
+            dplyr::filter(!is.na(id)) %>%
+            dplyr::summarise(Sum = sum(sv)) %>%
+            dplyr::select(Sum) %>%
+            dplyr::rename(!!newname := Sum)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # Potential E2 index
+    ff95 <- function(x){
+        newname <- paste0("f95")
+        out <- tibble(ff91(x) / ff24(x)) %>%
+            dplyr::rename(!!newname := f91)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -263,9 +297,10 @@ rwaves <- function(x){
         dplyr::mutate(f78 = purrr::map(data, ~ff2(.x, 4))) %>%
         dplyr::mutate(f89 = purrr::map(data, ~ff89(.x))) %>%
         dplyr::mutate(f90 = purrr::map(data, ~ff90(.x))) %>%
-        dplyr::mutate(f91 = purrr::map(data, ~ff2(.x, 5))) %>%
+        dplyr::mutate(f91 = purrr::map(data, ~ff91(.x))) %>%
         dplyr::mutate(f92 = purrr::map(data, ~ff92(.x))) %>%
         dplyr::mutate(f93 = purrr::map(data, ~ff93(.x))) %>%
+        dplyr::mutate(f95 = purrr::map(data, ~ff95(.x))) %>%
         dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
         dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
