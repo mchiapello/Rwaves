@@ -31,7 +31,7 @@ rwaves <- function(x){
     ###########################################################################
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
-    index1 <- index2 <- id <- sv <- d <- f24 <- NULL
+    index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -277,6 +277,16 @@ rwaves <- function(x){
        }
        return(out)
     }
+        # % of probing time spent in 5
+    ff119 <- function(x){
+        newname <- paste0("f119")
+        out <- tibble(ff95(x) * 100) %>%
+            dplyr::rename(!!newname := f95)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -304,7 +314,7 @@ rwaves <- function(x){
         dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
         dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
-        dplyr::mutate(f119 = purrr::map(data, ~ff115(.x, 5))) %>%
+        dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
         dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
       #  tidyr::unnest(c(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117))
         tidyr::unnest(f1:f117)
