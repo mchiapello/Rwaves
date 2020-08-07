@@ -287,6 +287,40 @@ rwaves <- function(x){
        }
        return(out)
     }
+        # mean frequency of 12 during 5
+    ff200 <- function(x){
+        newname <- paste0("f200")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+            dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                      waveforms %in% c(2, 99) ~ 0,
+                                      TRUE ~ 3)) %>%
+            dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+            tidyr::fill(index1) %>%
+            dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+            dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                             rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+            dplyr::count(id, waveforms) %>%
+            dplyr::filter(!is.na(id), waveforms == 12) %>%
+            dplyr::summarise(Sum = sum(n)) %>%
+            dplyr::select(Sum) %>%
+            dplyr::mutate(Sum = Sum / as.numeric(ff91(x))) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # % of 12 during 5
+    ff201 <- function(x){
+        newname <- paste0("f201")
+        out <- tibble(Sum = as.numeric(ff200(x)) * 100) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -313,10 +347,12 @@ rwaves <- function(x){
         dplyr::mutate(f95 = purrr::map(data, ~ff95(.x))) %>%
         dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
+        dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
         dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
         dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
-        dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
+        dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
+        dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
       #  tidyr::unnest(c(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117))
-        tidyr::unnest(f1:f117)
+        tidyr::unnest(f1:f201)
 }
 
