@@ -25,12 +25,13 @@
 #' @importFrom dplyr funs
 #' @importFrom dplyr vars
 #' @importFrom dplyr contains
+#' @importFrom dplyr slice
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
     ###########################################################################
     # VARIABLES
-    waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
+    waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- NULL
     ###########################################################################
     # FORMULA
@@ -341,6 +342,21 @@ rwaves <- function(x){
        }
        return(out)
     }
+        # Time from the beginning of E1 to the end of the EPG record
+    ff107 <- function(x){
+        newname <- paste0("f107")
+        f4 <- x %>%
+            dplyr::filter(waveforms == 4) %>%
+            dplyr::slice(1) %>%
+            dplyr::pull(time)
+        out <- dplyr::tibble(Sum = (as.numeric(x %>% dplyr::slice(nrow(x)) %>% pull(time)) - 
+                                    f4)) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -367,6 +383,7 @@ rwaves <- function(x){
         dplyr::mutate(f95 = purrr::map(data, ~ff95(.x))) %>%
         dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
         dplyr::mutate(f98 = purrr::map(data, ~ff98(.x))) %>%
+        dplyr::mutate(f107 = purrr::map(data, ~ff107(.x))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
         dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
         dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
