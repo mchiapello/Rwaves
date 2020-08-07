@@ -31,7 +31,7 @@ rwaves <- function(x){
     ###########################################################################
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
-    index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- NULL
+    index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -321,6 +321,26 @@ rwaves <- function(x){
        }
        return(out)
     }
+        # Total duration of nonphloematic phase
+    ff98 <- function(x){
+        newname <- paste0("f98")
+        out <- dplyr::tibble(Sum = as.numeric(ff24(x)) - as.numeric(ff96(x))) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # % of probing time spent in E1
+    ff119E <- function(x){
+        newname <- paste0("f119E")
+        out <- dplyr::tibble(Sum = (as.numeric(ff96(x)) / as.numeric(ff24(x))) * 100) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -346,10 +366,12 @@ rwaves <- function(x){
         dplyr::mutate(f93 = purrr::map(data, ~ff93(.x))) %>%
         dplyr::mutate(f95 = purrr::map(data, ~ff95(.x))) %>%
         dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
+        dplyr::mutate(f98 = purrr::map(data, ~ff98(.x))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
         dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
         dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
         dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
+        dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
         dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
         dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
       #  tidyr::unnest(c(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117))
