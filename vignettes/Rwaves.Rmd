@@ -35,4 +35,3 @@ In order to obtain results do:
 y <- rwaves(x)
 y
 ```
-

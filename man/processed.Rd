@@ -4,7 +4,8 @@
 \name{processed}
 \alias{processed}
 \title{Compute data}
-\format{A data frame with 6 rows and 14 variables:
+\format{
+A data frame with 6 rows and 14 variables:
 \describe{
   \item{File}{Sample identifier}
   \item{data}{Contains the original data}
@@ -20,7 +21,8 @@
   \item{f115_2}{\% probtimeinC 2}
   \item{f115_6}{\% probtimeinC 6}
   \item{f115_7}{\% probtimeinC 7}
-}}
+}
+}
 \source{
 PhD Matteo Ripamonti
 }

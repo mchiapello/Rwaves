@@ -4,11 +4,6 @@ f <- system.file("extdata", package = "Rwaves")
 x <- readData(f, estention = "ANA")
 pr <- rwaves(x)
 
-test_that("dimentions", {
-  expect_equal(nrow(pr), original %>% dplyr::count(File) %>% nrow)
-  expect_equal(ncol(pr), 14)
-})
-
 test_that("consistencpr", {
   expect_gte(min(pr$f1_1), 0)
   expect_gte(min(pr$f2_1), 0)

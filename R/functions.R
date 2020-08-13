@@ -25,12 +25,14 @@
 #' @importFrom dplyr funs
 #' @importFrom dplyr vars
 #' @importFrom dplyr contains
+#' @importFrom dplyr slice
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
     ###########################################################################
     # VARIABLES
-    waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- NULL
+    waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
+    index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -119,6 +121,242 @@ rwaves <- function(x){
        }
        return(out)
   }
+   # total number of 5
+    ff89 <- function(x){
+        newname <- paste0("f89_5")
+        out <- x %>%
+    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                              waveforms %in% c(2, 99) ~ 0,
+                              TRUE ~ 3)) %>%
+    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+    tidyr::fill(index1) %>%
+    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+    dplyr::mutate(index2 = ifelse(index1 == 1 & dplyr::lead(index1 == 0), 1, 0)) %>%
+    dplyr::summarise(Sum = sum(index2, na.rm = TRUE)) %>%
+    dplyr::rename(!!newname := Sum)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+    # Number of waveform 5 longer of 10 minutes
+    ff90 <- function(x){
+        newname <- paste0("f90_5")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                              waveforms %in% c(2, 99) ~ 0,
+                              TRUE ~ 3)) %>%
+    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+    tidyr::fill(index1) %>%
+    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+    dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                     rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+    dplyr::group_by(id) %>%
+    dplyr::summarise(sv = sum(cum)) %>%
+    dplyr::filter(!is.na(id),
+           sv >= 600) %>%
+    dplyr::count() %>%
+    dplyr::rename(!!newname := n)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+    # mean duration of one "5"
+    ff92 <- function(x){
+        newname <- paste0("f92_5")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                              waveforms %in% c(2, 99) ~ 0,
+                              TRUE ~ 3)) %>%
+    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+    tidyr::fill(index1) %>%
+    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+    dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                     rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+    dplyr::group_by(id) %>%
+    dplyr::summarise(sv = sum(cum)) %>%
+    dplyr::filter(!is.na(id)) %>%
+    dplyr::summarise(n = mean(sv)) %>%
+    dplyr::rename(!!newname := n)
+       if(nrow(out) == 0 | is.nan(out$f92_5)){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+    # duration of the longest "5"
+    ff93 <- function(x){
+        newname <- paste0("f93_5")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                              waveforms %in% c(2, 99) ~ 0,
+                              TRUE ~ 3)) %>%
+    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+    tidyr::fill(index1) %>%
+    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+    dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                     rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+    dplyr::group_by(id) %>%
+    dplyr::summarise(sv = sum(cum)) %>%
+    dplyr::filter(!is.na(id)) %>%
+    dplyr::filter(sv == max(sv)) %>%
+    dplyr::select(n = sv) %>%
+    dplyr::rename(!!newname := n)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+    # total duration of "3", "4" and "5"
+    ff96 <- function(x){
+        newname <- paste0("f96_345")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out3 <- x %>%
+           dplyr::filter(waveforms == 3) %>%
+           dplyr::group_by(waveforms) %>%
+           dplyr::summarize(Sum = sum(cum)) %>%
+           dplyr::pull(Sum)
+        out4 <- x %>%
+           dplyr::filter(waveforms == 4) %>%
+           dplyr::group_by(waveforms) %>%
+           dplyr::summarize(Sum = sum(cum)) %>%
+           dplyr::pull(Sum)
+        out5 <- x %>%
+            dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                      waveforms %in% c(2, 99) ~ 0,
+                                      TRUE ~ 3)) %>%
+            dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+            tidyr::fill(index1) %>%
+            dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+            dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                             rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+            dplyr::group_by(id) %>%
+            dplyr::summarise(sv = sum(cum)) %>%
+            dplyr::filter(!is.na(id)) %>%
+            dplyr::summarise(Sum = sum(sv)) %>%
+            dplyr::pull(Sum)
+       out <- tibble(!!newname := sum(out3, out4, out5))
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # Total duration of "5"
+    ff91 <- function(x){
+        newname <- paste0("f91")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+            dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                      waveforms %in% c(2, 99) ~ 0,
+                                      TRUE ~ 3)) %>%
+            dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+            tidyr::fill(index1) %>%
+            dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+            dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                             rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+            dplyr::group_by(id) %>%
+            dplyr::summarise(sv = sum(cum)) %>%
+            dplyr::filter(!is.na(id)) %>%
+            dplyr::summarise(Sum = sum(sv)) %>%
+            dplyr::select(Sum) %>%
+            dplyr::rename(!!newname := Sum)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # Potential E2 index
+    ff95 <- function(x){
+        newname <- paste0("f95")
+        out <- tibble(ff91(x) / ff24(x)) %>%
+            dplyr::rename(!!newname := f91)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # % of probing time spent in 5
+    ff119 <- function(x){
+        newname <- paste0("f119")
+        out <- tibble(ff95(x) * 100) %>%
+            dplyr::rename(!!newname := f95)
+       if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # mean frequency of 12 during 5
+    ff200 <- function(x){
+        newname <- paste0("f200")
+        x$cum <- c(diff(x$time), x$time[length(x$time)])
+        out <- x %>%
+            dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                      waveforms %in% c(2, 99) ~ 0,
+                                      TRUE ~ 3)) %>%
+            dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+            tidyr::fill(index1) %>%
+            dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+            dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                             rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+            dplyr::count(id, waveforms) %>%
+            dplyr::filter(!is.na(id), waveforms == 12) %>%
+            dplyr::summarise(Sum = sum(n)) %>%
+            dplyr::select(Sum) %>%
+            dplyr::mutate(Sum = Sum / as.numeric(ff91(x))) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # % of 12 during 5
+    ff201 <- function(x){
+        newname <- paste0("f201")
+        out <- tibble(Sum = as.numeric(ff200(x)) * 100) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # Total duration of nonphloematic phase
+    ff98 <- function(x){
+        newname <- paste0("f98")
+        out <- dplyr::tibble(Sum = as.numeric(ff24(x)) - as.numeric(ff96(x))) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # % of probing time spent in E1
+    ff119E <- function(x){
+        newname <- paste0("f119E")
+        out <- dplyr::tibble(Sum = (as.numeric(ff96(x)) / as.numeric(ff24(x))) * 100) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
+        # Time from the beginning of E1 to the end of the EPG record
+    ff107 <- function(x){
+        newname <- paste0("f107")
+        f4 <- x %>%
+            dplyr::filter(waveforms == 4) %>%
+            dplyr::slice(1) %>%
+            dplyr::pull(time)
+        out <- dplyr::tibble(Sum = (as.numeric(x %>% dplyr::slice(nrow(x)) %>% pull(time)) - 
+                                    f4)) %>%
+            dplyr::rename(!!newname := Sum)
+        if(nrow(out) == 0){
+           out[1, 1] <- 0
+       }
+       return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -133,13 +371,27 @@ rwaves <- function(x){
         dplyr::mutate(f14 = purrr::map(data, ~ff14(.x))) %>%
         dplyr::mutate(f24 = purrr::map(data, ~ff24(.x))) %>%
         dplyr::mutate(f29 = purrr::map(data, ~ff2(.x, 2))) %>%
-        dplyr::mutate(f67 = purrr::map(data, ~ff2(.x, 6))) %>%
         dplyr::mutate(f57 = purrr::map(data, ~ff1(.x, 7))) %>%
         dplyr::mutate(f58 = purrr::map(data, ~ff2(.x, 7))) %>%
+        dplyr::mutate(f75 = purrr::map(data, ~ff1(.x, 4))) %>%
+        dplyr::mutate(f78 = purrr::map(data, ~ff2(.x, 4))) %>%
+        dplyr::mutate(f89 = purrr::map(data, ~ff89(.x))) %>%
+        dplyr::mutate(f90 = purrr::map(data, ~ff90(.x))) %>%
+        dplyr::mutate(f91 = purrr::map(data, ~ff91(.x))) %>%
+        dplyr::mutate(f92 = purrr::map(data, ~ff92(.x))) %>%
+        dplyr::mutate(f93 = purrr::map(data, ~ff93(.x))) %>%
+        dplyr::mutate(f95 = purrr::map(data, ~ff95(.x))) %>%
+        dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
+        dplyr::mutate(f98 = purrr::map(data, ~ff98(.x))) %>%
+        dplyr::mutate(f107 = purrr::map(data, ~ff107(.x))) %>%
         dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
-        dplyr::mutate(f116 = purrr::map(data, ~ff115(.x, 6))) %>%
         dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
+        dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
+        dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
+        dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
+        dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
+        dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
       #  tidyr::unnest(c(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117))
-        tidyr::unnest(f1:f117)
+        tidyr::unnest(f1:f201)
 }
 
