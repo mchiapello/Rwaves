@@ -312,15 +312,37 @@ rwaves <- function(x){
        }
        return(out)
     }
-        # % of 12 during 5
+        # % of time spent in 12 during 5, Matteo's attempt
     ff201 <- function(x){
-        newname <- paste0("f201")
-        out <- tibble(Sum = as.numeric(ff200(x)) * 100) %>%
-            dplyr::rename(!!newname := Sum)
-        if(nrow(out) == 0){
-           out[1, 1] <- 0
-       }
-       return(out)
+      newname <- paste0("f201")
+      x$cum <- c(diff(x$time), x$time[length(x$time)])
+      out <- x %>%
+        dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                                waveforms %in% c(2, 99) ~ 0,
+                                                TRUE ~ 3)) %>%
+        dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+        tidyr::fill(index1) %>%
+        dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+        dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                                rep(cumsum(values), lengths)), index1 == 0, NA)]) %>% 
+        dplyr::filter(!is.na(id)) %>% 
+        dplyr::mutate(index2 = dplyr::case_when(waveforms == 12 ~ 1,
+                                                waveforms == 5 ~ 0,
+                                                TRUE ~ 3)) %>%
+        dplyr::mutate(index2 = ifelse(index2 == 3, NA, index2)) %>%
+        dplyr::mutate(index2 = ifelse(is.na(index2), 0, index2)) %>%
+        dplyr::mutate(id2 = LETTERS[replace(with(rle(index2),
+                                                 rep(cumsum(values), lengths)), index2 == 0, NA)]) %>% 
+        dplyr::filter(!is.na(id2)) %>% 
+        dplyr::group_by(index2) %>%
+        dplyr::summarise(sv = sum(cum)) %>% 
+        dplyr::mutate(Sum = sv / as.numeric(ff91(x))*100) %>% 
+        dplyr::select(Sum) %>%
+        dplyr::rename(!!newname := Sum)
+      if(nrow(out) == 0){
+        out[1, 1] <- 0
+      }
+      return(out)
     }
         # Total duration of nonphloematic phase
     ff98 <- function(x){
