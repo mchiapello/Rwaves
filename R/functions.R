@@ -418,7 +418,9 @@ rwaves <- function(x){
         dplyr::group_by(id) %>%
         dplyr::summarise(sv = sum(cum)) %>%
         dplyr::filter(!is.na(id),
-                      sv >= 600)
+                      sv >= 600) %>% 
+        dplyr::select(id) %>% 
+        dplyr::slice(1)
       tmpb <- x %>%
         dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
                                                 waveforms %in% c(2, 99) ~ 0,
@@ -428,7 +430,7 @@ rwaves <- function(x){
         dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
         dplyr::mutate(id = LETTERS[replace(with(rle(index1),
                                                 rep(cumsum(values), lengths)), index1 == 0, NA)]) %>% 
-        dplyr::filter(id == int$id) %>%
+        dplyr::filter(id == as.character(int)) %>%
         dplyr::slice(1) %>% 
         dplyr::select(time)
       if(length(tmpb) == 0){
@@ -475,7 +477,6 @@ rwaves <- function(x){
       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
       dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
       dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
-      #  tidyr::unnest(c(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117))
       tidyr::unnest(f1:f201)
 }
 
