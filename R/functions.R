@@ -379,41 +379,103 @@ rwaves <- function(x){
        }
        return(out)
     }
+    # Time from 1st probe (="2") to 1st E2 ("=5")
+    ff112 <- function(x){
+      newname <- paste0("f112")
+      x$cum <- c(diff(x$time), x$time[length(x$time)])
+      tmp <- x %>%
+        dplyr::filter(waveforms == 2) %>%
+        dplyr::slice(1) %>% 
+        dplyr::select(time)
+      tmpb <- x %>% 
+        dplyr::filter(waveforms == 5) %>%
+        dplyr::slice(1) %>% 
+        dplyr::select(time)
+      if(length(tmpb) == 0){
+        out <- dplyr::tibble(!!newname := 0)
+      } else {
+        out <- dplyr::tibble(!!newname := tmpb - tmp)
+      }
+      return(out)
+    }
+    # Time from 1st probe (="2") to 1st sustained E2 (> 600 seconds)
+    ff109 <- function(x){
+      newname <- paste0("f109")
+      x$cum <- c(diff(x$time), x$time[length(x$time)])
+      tmp <- x %>%
+        dplyr::filter(waveforms == 2) %>%
+        dplyr::slice(1) %>% 
+        dplyr::select(time)
+      int <- x %>%
+        dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                                waveforms %in% c(2, 99) ~ 0,
+                                                TRUE ~ 3)) %>%
+        dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+        tidyr::fill(index1) %>%
+        dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+        dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                                rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+        dplyr::group_by(id) %>%
+        dplyr::summarise(sv = sum(cum)) %>%
+        dplyr::filter(!is.na(id),
+                      sv >= 600)
+      tmpb <- x %>%
+        dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                                waveforms %in% c(2, 99) ~ 0,
+                                                TRUE ~ 3)) %>%
+        dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+        tidyr::fill(index1) %>%
+        dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+        dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                                rep(cumsum(values), lengths)), index1 == 0, NA)]) %>% 
+        dplyr::filter(id == int$id) %>%
+        dplyr::slice(1) %>% 
+        dplyr::select(time)
+      if(length(tmpb) == 0){
+        out <- dplyr::tibble(!!newname := 0)
+      } else {
+        out <- dplyr::tibble(!!newname := tmpb - tmp)
+      }
+      return(out)
+    }
+    
     ###########################################################################
     # FUNCTION
     ## Intermediate table
     tmp <- x %>%
-        dplyr::group_by(File) %>%
-        tidyr::nest()
+      dplyr::group_by(File) %>%
+      tidyr::nest()
     ## Final table
     tmp %>%
-        dplyr::mutate(f1 = purrr::map(data, ~ff1(.x, 1))) %>%
-        dplyr::mutate(f2 = purrr::map(data, ~ff2(.x, 1))) %>%
-        dplyr::mutate(f3 = purrr::map(data, ~ff3(.x, 1))) %>%
-        dplyr::mutate(f14 = purrr::map(data, ~ff14(.x))) %>%
-        dplyr::mutate(f24 = purrr::map(data, ~ff24(.x))) %>%
-        dplyr::mutate(f29 = purrr::map(data, ~ff2(.x, 2))) %>%
-        dplyr::mutate(f57 = purrr::map(data, ~ff1(.x, 7))) %>%
-        dplyr::mutate(f58 = purrr::map(data, ~ff2(.x, 7))) %>%
-        dplyr::mutate(f75 = purrr::map(data, ~ff1(.x, 4))) %>%
-        dplyr::mutate(f78 = purrr::map(data, ~ff2(.x, 4))) %>%
-        dplyr::mutate(f89 = purrr::map(data, ~ff89(.x))) %>%
-        dplyr::mutate(f90 = purrr::map(data, ~ff90(.x))) %>%
-        dplyr::mutate(f91 = purrr::map(data, ~ff91(.x))) %>%
-        dplyr::mutate(f92 = purrr::map(data, ~ff92(.x))) %>%
-        dplyr::mutate(f93 = purrr::map(data, ~ff93(.x))) %>%
-        dplyr::mutate(f95 = purrr::map(data, ~ff95(.x))) %>%
-        dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
-        dplyr::mutate(f98 = purrr::map(data, ~ff98(.x))) %>%
-        dplyr::mutate(f107 = purrr::map(data, ~ff107(.x))) %>%
-        dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
-        dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
-        dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
-        dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
-        dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
-        dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
-        dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
+      dplyr::mutate(f1 = purrr::map(data, ~ff1(.x, 1))) %>%
+      dplyr::mutate(f2 = purrr::map(data, ~ff2(.x, 1))) %>%
+      dplyr::mutate(f3 = purrr::map(data, ~ff3(.x, 1))) %>%
+      dplyr::mutate(f14 = purrr::map(data, ~ff14(.x))) %>%
+      dplyr::mutate(f24 = purrr::map(data, ~ff24(.x))) %>%
+      dplyr::mutate(f29 = purrr::map(data, ~ff2(.x, 2))) %>%
+      dplyr::mutate(f57 = purrr::map(data, ~ff1(.x, 7))) %>%
+      dplyr::mutate(f58 = purrr::map(data, ~ff2(.x, 7))) %>%
+      dplyr::mutate(f75 = purrr::map(data, ~ff1(.x, 4))) %>%
+      dplyr::mutate(f78 = purrr::map(data, ~ff2(.x, 4))) %>%
+      dplyr::mutate(f89 = purrr::map(data, ~ff89(.x))) %>%
+      dplyr::mutate(f90 = purrr::map(data, ~ff90(.x))) %>%
+      dplyr::mutate(f91 = purrr::map(data, ~ff91(.x))) %>%
+      dplyr::mutate(f92 = purrr::map(data, ~ff92(.x))) %>%
+      dplyr::mutate(f93 = purrr::map(data, ~ff93(.x))) %>%
+      dplyr::mutate(f95 = purrr::map(data, ~ff95(.x))) %>%
+      dplyr::mutate(f96 = purrr::map(data, ~ff96(.x))) %>%
+      dplyr::mutate(f98 = purrr::map(data, ~ff98(.x))) %>%
+      dplyr::mutate(f107 = purrr::map(data, ~ff107(.x))) %>%
+      dplyr::mutate(f109 = purrr::map(data, ~ff109(.x))) %>%
+      dplyr::mutate(f112 = purrr::map(data, ~ff112(.x))) %>%
+      dplyr::mutate(f115 = purrr::map(data, ~ff115(.x, 2))) %>%
+      dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
+      dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
+      dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
+      dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
+      dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
+      dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
       #  tidyr::unnest(c(f1,f2,f3,f14,f24,f29,f67,f57,f58,f115,f116,f117))
-        tidyr::unnest(f1:f201)
+      tidyr::unnest(f1:f201)
 }
 
