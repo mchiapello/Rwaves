@@ -33,6 +33,7 @@ rwaves <- function(x){
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- NULL
+    id2 <- res <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
