@@ -440,6 +440,20 @@ rwaves <- function(x){
       return(out)
     }
     
+    # waveform at 8 different hours
+    ff1hour <- function(x, hour = 3600){
+      newname <- paste0("f1hour_", hour)
+      x$cum <- c(diff(x$time), x$time[length(x$time)])
+      out <- x %>% 
+        dplyr::filter(time <= hour) %>% 
+        dplyr::slice_tail() %>% 
+        dplyr::pull(waveforms)
+      if(nrow(out) == 0){
+        out[1, 1] <- 0
+      }
+      return(out)
+    }
+    
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -476,6 +490,14 @@ rwaves <- function(x){
       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
       dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
       dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
+      dplyr::mutate(f1hour = purrr::map(data, ~ff1hour(.x, 3600))) %>%
+      dplyr::mutate(f2hour = purrr::map(data, ~ff1hour(.x, 7200))) %>%
+      dplyr::mutate(f3hour = purrr::map(data, ~ff1hour(.x, 10800))) %>%
+      dplyr::mutate(f4hour = purrr::map(data, ~ff1hour(.x, 14400))) %>%
+      dplyr::mutate(f5hour = purrr::map(data, ~ff1hour(.x, 18000))) %>%
+      dplyr::mutate(f6hour = purrr::map(data, ~ff1hour(.x, 21600))) %>%
+      dplyr::mutate(f7hour = purrr::map(data, ~ff1hour(.x, 25200))) %>%
+      dplyr::mutate(f8hour = purrr::map(data, ~ff1hour(.x, 28800))) %>%
       tidyr::unnest(f1:f201)
 }
 
