@@ -26,6 +26,7 @@
 #' @importFrom dplyr vars
 #' @importFrom dplyr contains
 #' @importFrom dplyr slice
+#' @importFrom dplyr slice_tail
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
@@ -33,6 +34,7 @@ rwaves <- function(x){
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- NULL
+    id2 <- res <- f300 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -441,19 +443,21 @@ rwaves <- function(x){
     }
     
     # waveform at 8 different hours
-    ff1hour <- function(x, hour = 3600){
-      newname <- paste0("f1hour_", hour)
+    ff300 <- function(x, hour = 3600){
+      newname <- paste0("f300_", hour)
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       out <- x %>% 
         dplyr::filter(time <= hour) %>% 
-        dplyr::slice_tail() %>% 
+        dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
+      out <- dplyr::tibble(res := out) %>% 
+        dplyr::rename(!!newname := res)
       if(nrow(out) == 0){
         out[1, 1] <- 0
       }
       return(out)
     }
-    
+
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -490,14 +494,14 @@ rwaves <- function(x){
       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
       dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
       dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
-      dplyr::mutate(f1hour = purrr::map(data, ~ff1hour(.x, 3600))) %>%
-      dplyr::mutate(f2hour = purrr::map(data, ~ff1hour(.x, 7200))) %>%
-      dplyr::mutate(f3hour = purrr::map(data, ~ff1hour(.x, 10800))) %>%
-      dplyr::mutate(f4hour = purrr::map(data, ~ff1hour(.x, 14400))) %>%
-      dplyr::mutate(f5hour = purrr::map(data, ~ff1hour(.x, 18000))) %>%
-      dplyr::mutate(f6hour = purrr::map(data, ~ff1hour(.x, 21600))) %>%
-      dplyr::mutate(f7hour = purrr::map(data, ~ff1hour(.x, 25200))) %>%
-      dplyr::mutate(f8hour = purrr::map(data, ~ff1hour(.x, 28800))) %>%
-      tidyr::unnest(f1:f201)
+      dplyr::mutate(f301 = purrr::map(data, ~ff300(.x, 3600))) %>%
+      dplyr::mutate(f302 = purrr::map(data, ~ff300(.x, 7200))) %>%
+      dplyr::mutate(f303 = purrr::map(data, ~ff300(.x, 10800))) %>%
+      dplyr::mutate(f304 = purrr::map(data, ~ff300(.x, 14400))) %>%
+      dplyr::mutate(f305 = purrr::map(data, ~ff300(.x, 18000))) %>%
+      dplyr::mutate(f306 = purrr::map(data, ~ff300(.x, 21600))) %>%
+      dplyr::mutate(f307 = purrr::map(data, ~ff300(.x, 25200))) %>%
+      dplyr::mutate(f308 = purrr::map(data, ~ff300(.x, 28800))) %>%
+      tidyr::unnest(f1:f308)
 }
 

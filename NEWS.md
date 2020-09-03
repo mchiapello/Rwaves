@@ -1,3 +1,6 @@
+# Rwaves 0.0.5
+* Added 3 new functions
+
 # Rwaves 0.0.4
 
 * Implement the rwaves fx to work in cases when there are missing waves
