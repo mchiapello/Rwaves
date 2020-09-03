@@ -26,6 +26,7 @@
 #' @importFrom dplyr vars
 #' @importFrom dplyr contains
 #' @importFrom dplyr slice
+#' @importFrom dplyr slice_tail
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
@@ -33,6 +34,7 @@ rwaves <- function(x){
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- NULL
+    id2 <- res <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -446,14 +448,16 @@ rwaves <- function(x){
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       out <- x %>% 
         dplyr::filter(time <= hour) %>% 
-        dplyr::slice_tail() %>% 
+        dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
+      out <- dplyr::tibble(res := out) %>% 
+        dplyr::rename(!!newname := res)
       if(nrow(out) == 0){
         out[1, 1] <- 0
       }
       return(out)
     }
-    
+
     ###########################################################################
     # FUNCTION
     ## Intermediate table
