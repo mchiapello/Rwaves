@@ -443,11 +443,11 @@ rwaves <- function(x){
     }
     
     # waveform at 8 different hours
-    ff300 <- function(x, hour = 3600){
-      newname <- paste0("f300_", hour)
+    ff300 <- function(x, d = 3600){
+      newname <- paste0("f300_", d)
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       out <- x %>% 
-        dplyr::filter(time <= hour) %>% 
+        dplyr::filter(time <= d) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
       out <- dplyr::tibble(res := out) %>% 
