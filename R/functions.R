@@ -446,11 +446,11 @@ rwaves <- function(x){
     ff300 <- function(x, d = 3600){
       newname <- paste0("f300_", d)
       x$cum <- c(diff(x$time), x$time[length(x$time)])
-      out <- x %>% 
+      mat <- x %>% 
         dplyr::filter(time <= d) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := out) %>% 
+      out <- dplyr::tibble(res := mat) %>% 
         dplyr::rename(!!newname := res)
       if(nrow(out) == 0){
         out[1, 1] <- 0
