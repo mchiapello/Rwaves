@@ -35,7 +35,7 @@ rwaves <- function(x){
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- NULL
     id2 <- res <- mat <- NULL
-    f301 <- f302 <- f303 <- f304 <- f305 <- f306 <- f307 <- f308 <- NULL
+    f191 <- f192 <- f193 <- f194 <- f195 <- f196 <- f197 <- f198 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -444,8 +444,8 @@ rwaves <- function(x){
     }
     
     # waveform at hour 1
-    ff301 <- function(x){
-      newname <- paste0("f301")
+    ff191 <- function(x){
+      newname <- paste0("f191")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 3600) %>% 
@@ -460,8 +460,8 @@ rwaves <- function(x){
     }
 
     # waveform at hour 2
-    ff302 <- function(x){
-      newname <- paste0("f302")
+    ff192 <- function(x){
+      newname <- paste0("f192")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 7200) %>% 
@@ -476,8 +476,8 @@ rwaves <- function(x){
     }
     
     # waveform at hour 3
-    ff303 <- function(x){
-      newname <- paste0("f303")
+    ff193 <- function(x){
+      newname <- paste0("f193")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 10800) %>% 
@@ -492,8 +492,8 @@ rwaves <- function(x){
     }
     
     # waveform at hour 4
-    ff304 <- function(x){
-      newname <- paste0("f304")
+    ff194 <- function(x){
+      newname <- paste0("f194")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 14400) %>% 
@@ -508,8 +508,8 @@ rwaves <- function(x){
     }
     
     # waveform at hour 5
-    ff305 <- function(x){
-      newname <- paste0("f305")
+    ff195 <- function(x){
+      newname <- paste0("f195")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 18000) %>% 
@@ -524,8 +524,8 @@ rwaves <- function(x){
     }
     
     # waveform at hour 6
-    ff306 <- function(x){
-      newname <- paste0("f306")
+    ff196 <- function(x){
+      newname <- paste0("f196")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 21600) %>% 
@@ -540,8 +540,8 @@ rwaves <- function(x){
     }
     
     # waveform at hour 7
-    ff307 <- function(x){
-      newname <- paste0("f307")
+    ff197 <- function(x){
+      newname <- paste0("f197")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 25200) %>% 
@@ -556,8 +556,8 @@ rwaves <- function(x){
     }
     
     # waveform at hour 8
-    ff308 <- function(x){
-      newname <- paste0("f308")
+    ff198 <- function(x){
+      newname <- paste0("f198")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(time <= 28800) %>% 
@@ -604,16 +604,16 @@ rwaves <- function(x){
       dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
       dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
+      dplyr::mutate(f191 = purrr::map(data, ~ff191(.x))) %>%
+      dplyr::mutate(f192 = purrr::map(data, ~ff192(.x))) %>%
+      dplyr::mutate(f193 = purrr::map(data, ~ff193(.x))) %>%
+      dplyr::mutate(f194 = purrr::map(data, ~ff194(.x))) %>%
+      dplyr::mutate(f195 = purrr::map(data, ~ff195(.x))) %>%
+      dplyr::mutate(f196 = purrr::map(data, ~ff196(.x))) %>%
+      dplyr::mutate(f197 = purrr::map(data, ~ff197(.x))) %>%
+      dplyr::mutate(f198 = purrr::map(data, ~ff198(.x))) %>%
       dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
       dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
-      dplyr::mutate(f301 = purrr::map(data, ~ff301(.x))) %>%
-      dplyr::mutate(f302 = purrr::map(data, ~ff302(.x))) %>%
-      dplyr::mutate(f303 = purrr::map(data, ~ff303(.x))) %>%
-      dplyr::mutate(f304 = purrr::map(data, ~ff304(.x))) %>%
-      dplyr::mutate(f305 = purrr::map(data, ~ff305(.x))) %>%
-      dplyr::mutate(f306 = purrr::map(data, ~ff306(.x))) %>%
-      dplyr::mutate(f307 = purrr::map(data, ~ff307(.x))) %>%
-      dplyr::mutate(f308 = purrr::map(data, ~ff308(.x))) %>%
-      tidyr::unnest(f1:f308)
+      tidyr::unnest(f1:f201)
 }
 
