@@ -448,6 +448,7 @@ rwaves <- function(x){
       newname <- paste0("f191")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= 3600) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
@@ -464,6 +465,7 @@ rwaves <- function(x){
       newname <- paste0("f192")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= 7200) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
@@ -480,6 +482,7 @@ rwaves <- function(x){
       newname <- paste0("f193")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= 10800) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
@@ -496,6 +499,7 @@ rwaves <- function(x){
       newname <- paste0("f194")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= 14400) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
@@ -512,6 +516,7 @@ rwaves <- function(x){
       newname <- paste0("f195")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= 18000) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
@@ -528,6 +533,7 @@ rwaves <- function(x){
       newname <- paste0("f196")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= 21600) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
@@ -544,6 +550,7 @@ rwaves <- function(x){
       newname <- paste0("f197")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= 25200) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
@@ -560,7 +567,8 @@ rwaves <- function(x){
       newname <- paste0("f198")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
-        dplyr::filter(time <= 28800) %>% 
+        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
+        dplyr::filter(time < 28800) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
       out <- dplyr::tibble(res := mat) %>% 
