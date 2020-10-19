@@ -35,7 +35,7 @@ rwaves <- function(x){
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- f202 <- NULL
     id2 <- res <- mat <- NULL
-    f191 <- f192 <- f193 <- f194 <- f195 <- f196 <- f197 <- f198 <- NULL
+    f190 <- f191 <- f192 <- f193 <- f194 <- f195 <- f196 <- f197 <- f198 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -443,8 +443,8 @@ rwaves <- function(x){
       return(out)
     }
     
-    # waveform at hour "d" (from 1 to 8)
-    ff191 <- function(x, d=3600){
+    # waveform at time "d" (from 1 to 28800 seconds)
+    ff190 <- function(x, d=3600){
       newname <- paste0("f191_", d)
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
@@ -483,27 +483,7 @@ rwaves <- function(x){
       }
       return(out)
     }
-    # number of "12" during "5"
-    ff202 <- function(x){
-      newname <- paste0("f202")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      out <- x %>%
-        dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                                                waveforms %in% c(2, 99) ~ 0,
-                                                TRUE ~ 3)) %>%
-        dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
-        tidyr::fill(index1) %>%
-        dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
-        dplyr::mutate(id = LETTERS[replace(with(rle(index1),
-                                                rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
-        dplyr::count(id, waveforms) %>%
-        dplyr::filter(!is.na(id), waveforms == 12) %>%
-        dplyr::summarise(Sum = sum(n))
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
+   
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -538,14 +518,15 @@ rwaves <- function(x){
       dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
       dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
-      dplyr::mutate(f191 = purrr::map(data, ~ff191(.x, 3600))) %>%
-      dplyr::mutate(f192 = purrr::map(data, ~ff191(.x, 7200))) %>%
-      dplyr::mutate(f193 = purrr::map(data, ~ff191(.x, 10800))) %>%
-      dplyr::mutate(f194 = purrr::map(data, ~ff191(.x, 14400))) %>%
-      dplyr::mutate(f195 = purrr::map(data, ~ff191(.x, 18000))) %>%
-      dplyr::mutate(f196 = purrr::map(data, ~ff191(.x, 21600))) %>%
-      dplyr::mutate(f197 = purrr::map(data, ~ff191(.x, 25200))) %>%
-      dplyr::mutate(f198 = purrr::map(data, ~ff191(.x, 28799.9))) %>%
+      dplyr::mutate(f190 = purrr::map(data, ~ff190(.x, 1))) %>%
+      dplyr::mutate(f191 = purrr::map(data, ~ff190(.x, 3600))) %>%
+      dplyr::mutate(f192 = purrr::map(data, ~ff190(.x, 7200))) %>%
+      dplyr::mutate(f193 = purrr::map(data, ~ff190(.x, 10800))) %>%
+      dplyr::mutate(f194 = purrr::map(data, ~ff190(.x, 14400))) %>%
+      dplyr::mutate(f195 = purrr::map(data, ~ff190(.x, 18000))) %>%
+      dplyr::mutate(f196 = purrr::map(data, ~ff190(.x, 21600))) %>%
+      dplyr::mutate(f197 = purrr::map(data, ~ff190(.x, 25200))) %>%
+      dplyr::mutate(f198 = purrr::map(data, ~ff190(.x, 28799.9))) %>%
       dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
       dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
       dplyr::mutate(f202 = purrr::map(data, ~ff202(.x))) %>%
