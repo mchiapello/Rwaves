@@ -483,27 +483,7 @@ rwaves <- function(x){
       }
       return(out)
     }
-    # number of "12" during "5"
-    ff202 <- function(x){
-      newname <- paste0("f202")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      out <- x %>%
-        dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                                                waveforms %in% c(2, 99) ~ 0,
-                                                TRUE ~ 3)) %>%
-        dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
-        tidyr::fill(index1) %>%
-        dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
-        dplyr::mutate(id = LETTERS[replace(with(rle(index1),
-                                                rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
-        dplyr::count(id, waveforms) %>%
-        dplyr::filter(!is.na(id), waveforms == 12) %>%
-        dplyr::summarise(Sum = sum(n))
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
+   
     ###########################################################################
     # FUNCTION
     ## Intermediate table
