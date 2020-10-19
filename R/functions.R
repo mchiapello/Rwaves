@@ -450,7 +450,7 @@ rwaves <- function(x){
       mat <- x %>% 
         dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
         dplyr::filter(time <= d) %>% 
-        dplyr::slice_tail(1) %>% 
+        dplyr::slice_tail(n=1) %>% 
         dplyr::pull(waveforms)
       out <- dplyr::tibble(res := mat) %>% 
         dplyr::rename(!!newname := res)
