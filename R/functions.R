@@ -443,13 +443,13 @@ rwaves <- function(x){
       return(out)
     }
     
-    # waveform at hour 1
-    ff191 <- function(x){
-      newname <- paste0("f191")
+    # waveform at hour "d" (from 1 to 8)
+    ff191 <- function(x, d=3600){
+      newname <- paste0("f191_", d)
       x$cum <- c(diff(x$time), x$time[length(x$time)])
       mat <- x %>% 
         dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time <= 3600) %>% 
+        dplyr::filter(time <= d) %>% 
         dplyr::slice_tail(1) %>% 
         dplyr::pull(waveforms)
       out <- dplyr::tibble(res := mat) %>% 
@@ -460,125 +460,7 @@ rwaves <- function(x){
       return(out)
     }
 
-    # waveform at hour 2
-    ff192 <- function(x){
-      newname <- paste0("f192")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      mat <- x %>% 
-        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time <= 7200) %>% 
-        dplyr::slice_tail(1) %>% 
-        dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := mat) %>% 
-        dplyr::rename(!!newname := res)
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
-    
-    # waveform at hour 3
-    ff193 <- function(x){
-      newname <- paste0("f193")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      mat <- x %>% 
-        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time <= 10800) %>% 
-        dplyr::slice_tail(1) %>% 
-        dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := mat) %>% 
-        dplyr::rename(!!newname := res)
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
-    
-    # waveform at hour 4
-    ff194 <- function(x){
-      newname <- paste0("f194")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      mat <- x %>% 
-        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time <= 14400) %>% 
-        dplyr::slice_tail(1) %>% 
-        dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := mat) %>% 
-        dplyr::rename(!!newname := res)
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
-    
-    # waveform at hour 5
-    ff195 <- function(x){
-      newname <- paste0("f195")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      mat <- x %>% 
-        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time <= 18000) %>% 
-        dplyr::slice_tail(1) %>% 
-        dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := mat) %>% 
-        dplyr::rename(!!newname := res)
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
-    
-    # waveform at hour 6
-    ff196 <- function(x){
-      newname <- paste0("f196")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      mat <- x %>% 
-        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time <= 21600) %>% 
-        dplyr::slice_tail(1) %>% 
-        dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := mat) %>% 
-        dplyr::rename(!!newname := res)
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
-    
-    # waveform at hour 7
-    ff197 <- function(x){
-      newname <- paste0("f197")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      mat <- x %>% 
-        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time <= 25200) %>% 
-        dplyr::slice_tail(1) %>% 
-        dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := mat) %>% 
-        dplyr::rename(!!newname := res)
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
-    
-    # waveform at hour 8
-    ff198 <- function(x){
-      newname <- paste0("f198")
-      x$cum <- c(diff(x$time), x$time[length(x$time)])
-      mat <- x %>% 
-        dplyr::filter(!waveforms == 11 & !waveforms == 12) %>% 
-        dplyr::filter(time < 28800) %>% 
-        dplyr::slice_tail(1) %>% 
-        dplyr::pull(waveforms)
-      out <- dplyr::tibble(res := mat) %>% 
-        dplyr::rename(!!newname := res)
-      if(nrow(out) == 0){
-        out[1, 1] <- 0
-      }
-      return(out)
-    }
-    # number of "12" during "5"
+     # number of "12" during "5"
     ff202 <- function(x){
       newname <- paste0("f202")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
@@ -635,14 +517,14 @@ rwaves <- function(x){
       dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
       dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
-      dplyr::mutate(f191 = purrr::map(data, ~ff191(.x))) %>%
-      dplyr::mutate(f192 = purrr::map(data, ~ff192(.x))) %>%
-      dplyr::mutate(f193 = purrr::map(data, ~ff193(.x))) %>%
-      dplyr::mutate(f194 = purrr::map(data, ~ff194(.x))) %>%
-      dplyr::mutate(f195 = purrr::map(data, ~ff195(.x))) %>%
-      dplyr::mutate(f196 = purrr::map(data, ~ff196(.x))) %>%
-      dplyr::mutate(f197 = purrr::map(data, ~ff197(.x))) %>%
-      dplyr::mutate(f198 = purrr::map(data, ~ff198(.x))) %>%
+      dplyr::mutate(f191 = purrr::map(data, ~ff191(.x, 3600))) %>%
+      dplyr::mutate(f192 = purrr::map(data, ~ff191(.x, 7200))) %>%
+      dplyr::mutate(f193 = purrr::map(data, ~ff191(.x, 10800))) %>%
+      dplyr::mutate(f194 = purrr::map(data, ~ff191(.x, 14400))) %>%
+      dplyr::mutate(f195 = purrr::map(data, ~ff191(.x, 18000))) %>%
+      dplyr::mutate(f196 = purrr::map(data, ~ff191(.x, 21600))) %>%
+      dplyr::mutate(f197 = purrr::map(data, ~ff191(.x, 25200))) %>%
+      dplyr::mutate(f198 = purrr::map(data, ~ff191(.x, 28799.9))) %>%
       dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
       dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
       dplyr::mutate(f202 = purrr::map(data, ~ff202(.x))) %>%
