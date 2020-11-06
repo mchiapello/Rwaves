@@ -35,7 +35,7 @@ rwaves <- function(x){
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- f202 <- NULL
     id2 <- res <- mat <- NULL
-    f190 <- f191 <- f192 <- f193 <- f194 <- f195 <- f196 <- f197 <- f198 <- NULL
+    f190 <- f191 <- f192 <- f193 <- f194 <- f195 <- f196 <- f197 <- f198 <- f210 <- NULL
     ###########################################################################
     # FORMULA
         # total number of "X"
@@ -483,7 +483,25 @@ rwaves <- function(x){
       }
       return(out)
     }
-   
+    # Time from 1st np (="1") to 1st probe ("=2")
+    ff210 <- function(x){
+      newname <- paste0("f210")
+      x$cum <- c(diff(x$time), x$time[length(x$time)])
+      tmp <- x %>%
+        dplyr::filter(waveforms == 1) %>%
+        dplyr::slice(1) %>% 
+        dplyr::pull(time)
+      tmpb <- x %>% 
+        dplyr::filter(waveforms == 2) %>%
+        dplyr::slice(1) %>% 
+        dplyr::pull(time)
+      out <- dplyr::tibble(res := tmpb - tmp) %>% 
+        dplyr::rename(!!newname := res)
+      if(nrow(out) == 0){
+        out[1, 1] <- 0
+      }
+      return(out)
+    }
     ###########################################################################
     # FUNCTION
     ## Intermediate table
@@ -530,6 +548,7 @@ rwaves <- function(x){
       dplyr::mutate(f200 = purrr::map(data, ~ff200(.x))) %>%
       dplyr::mutate(f201 = purrr::map(data, ~ff201(.x))) %>%
       dplyr::mutate(f202 = purrr::map(data, ~ff202(.x))) %>%
-      tidyr::unnest(f1:f202)
+      dplyr::mutate(f210 = purrr::map(data, ~ff210(.x))) %>%
+      tidyr::unnest(f1:f210)
 }
 
