@@ -7,6 +7,7 @@
 # Rwaves  <img src="inst/logo/test.png" align="right" alt="" width="150" />
 
 ## Installation
+
 ```r
 devtools::install_github("mchiapello/Rwaves")
 ```
