@@ -622,7 +622,7 @@ ff95 <- function(x){
       dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
       dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
       dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
-#       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
+      dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
       dplyr::mutate(f190 = purrr::map(data, ~ff190(.x, 1))) %>%
       dplyr::mutate(f191 = purrr::map(data, ~ff190(.x, 3600))) %>%
       dplyr::mutate(f192 = purrr::map(data, ~ff190(.x, 7200))) %>%
