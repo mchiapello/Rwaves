@@ -193,24 +193,27 @@ rwaves <- function(x){
     ff93 <- function(x){
         newname <- paste0("f93_5")
         x$cum <- c(diff(x$time), x$time[length(x$time)])
-        out <- x %>%
-    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                              waveforms %in% c(2, 99) ~ 0,
-                              TRUE ~ 3)) %>%
-    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
-    tidyr::fill(index1) %>%
-    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
-    dplyr::mutate(id = LETTERS[replace(with(rle(index1),
-                                     rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
-    dplyr::group_by(id) %>%
-    dplyr::summarise(sv = sum(cum)) %>%
-    dplyr::filter(!is.na(id)) %>%
-    dplyr::filter(sv == max(sv)) %>%
-    dplyr::select(n = sv) %>%
-    dplyr::rename(!!newname := n)
-       if(nrow(out) == 0){
-           out[1, 1] <- 0
-       }
+        tmp <- x %>%
+                  dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                            waveforms %in% c(2, 99) ~ 0,
+                                            TRUE ~ 3)) %>%
+                  dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+                  tidyr::fill(index1) %>%
+                  dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+                  dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                                   rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+                  dplyr::group_by(id) %>%
+                  dplyr::summarise(sv = sum(cum)) %>%
+                  dplyr::filter(!is.na(id))
+    if(nrow(tmp) != 0 ){
+       out <- tmp %>%
+            dplyr::filter(sv == max(sv)) %>%
+            dplyr::select(n = sv) %>%
+            dplyr::rename(!!newname := n)
+       } else {
+           out <- dplyr::tibble(res = NA) %>%
+               dplyr::rename(!!newname := res)
+    }
        return(out)
     }
     # total duration of "3", "4" and "5"
