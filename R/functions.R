@@ -27,6 +27,7 @@
 #' @importFrom dplyr contains
 #' @importFrom dplyr slice
 #' @importFrom dplyr slice_tail
+#' @importFrom dplyr distinct
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
@@ -34,7 +35,7 @@ rwaves <- function(x){
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- f202 <- NULL
-    id2 <- res <- mat <- NULL
+    id2 <- res <- mat <- f150 <- NULL
     f190 <- f191 <- f192 <- f193 <- f194 <- f195 <- f196 <- f197 <- f198 <- f210 <- NULL
     ###########################################################################
     # FORMULA
