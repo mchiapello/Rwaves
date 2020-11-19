@@ -27,6 +27,7 @@
 #' @importFrom dplyr contains
 #' @importFrom dplyr slice
 #' @importFrom dplyr slice_tail
+#' @importFrom dplyr distinct
 rwaves <- function(x) UseMethod("rwaves")
 
 rwaves <- function(x){
@@ -34,7 +35,7 @@ rwaves <- function(x){
     # VARIABLES
     waveforms <- cum <- Sum <- File <- f1 <- f117 <- `:=` <- n <- time <- NULL
     index1 <- index2 <- id <- sv <- d <- f24 <- f91 <- f95 <- f201 <- f202 <- NULL
-    id2 <- res <- mat <- NULL
+    id2 <- res <- mat <- f150 <- NULL
     f190 <- f191 <- f192 <- f193 <- f194 <- f195 <- f196 <- f197 <- f198 <- f210 <- NULL
     ###########################################################################
     # FORMULA
@@ -193,24 +194,27 @@ rwaves <- function(x){
     ff93 <- function(x){
         newname <- paste0("f93_5")
         x$cum <- c(diff(x$time), x$time[length(x$time)])
-        out <- x %>%
-    dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                              waveforms %in% c(2, 99) ~ 0,
-                              TRUE ~ 3)) %>%
-    dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
-    tidyr::fill(index1) %>%
-    dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
-    dplyr::mutate(id = LETTERS[replace(with(rle(index1),
-                                     rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
-    dplyr::group_by(id) %>%
-    dplyr::summarise(sv = sum(cum)) %>%
-    dplyr::filter(!is.na(id)) %>%
-    dplyr::filter(sv == max(sv)) %>%
-    dplyr::select(n = sv) %>%
-    dplyr::rename(!!newname := n)
-       if(nrow(out) == 0){
-           out[1, 1] <- 0
-       }
+        tmp <- x %>%
+                  dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                            waveforms %in% c(2, 99) ~ 0,
+                                            TRUE ~ 3)) %>%
+                  dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+                  tidyr::fill(index1) %>%
+                  dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+                  dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                                   rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+                  dplyr::group_by(id) %>%
+                  dplyr::summarise(sv = sum(cum)) %>%
+                  dplyr::filter(!is.na(id))
+    if(nrow(tmp) != 0 ){
+       out <- tmp %>%
+            dplyr::filter(sv == max(sv)) %>%
+            dplyr::select(n = sv) %>%
+            dplyr::rename(!!newname := n)
+       } else {
+           out <- dplyr::tibble(res = NA) %>%
+               dplyr::rename(!!newname := res)
+    }
        return(out)
     }
     # total duration of "3", "4" and "5"
@@ -311,67 +315,68 @@ rwaves <- function(x){
     #The potential E2 index (van Helden & Tjallingii, 1993)
     #was calculated as the percentage of time spent in E2 by
     #an aphid with any sE2, after reaching the ﬁrst sE2 #(anziché tmp si può mettere la ff150(x), ma al momento non ci riesco e smadonno)
-    ff95 <- function(x){
-        newname <- paste0("f95")
-        x$cum <- c(diff(x$time), x$time[length(x$time)])
-        tmp <- x %>%
-          dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                                                  waveforms %in% c(2, 99) ~ 0,
-                                                  TRUE ~ 3)) %>%
-          dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
-          tidyr::fill(index1) %>%
-          dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
-          dplyr::mutate(id = LETTERS[replace(with(rle(index1),
-                                                  rep(cumsum(values), lengths)), index1 == 0, NA)]) %>% 
-          dplyr::filter(id == as.character(x %>%
-                                             dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                                                                                     waveforms %in% c(2, 99) ~ 0,
-                                                                                     TRUE ~ 3)) %>%
-                                             dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
-                                             tidyr::fill(index1) %>%
-                                             dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
-                                             dplyr::mutate(id = LETTERS[replace(with(rle(index1),
-                                                                                     rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
-                                             dplyr::group_by(id) %>%
-                                             dplyr::summarise(sv = sum(cum)) %>%
-                                             dplyr::filter(!is.na(id),
-                                                           sv >= 600) %>% 
-                                             dplyr::select(id) %>% 
-                                             dplyr::slice(1))) %>%
-          dplyr::slice(1) %>% 
-          dplyr::pull(time)
-        tmp2 <- x %>% filter(time >= tmp) %>% 
-          dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
-                                                  waveforms %in% c(2, 99) ~ 0,
-                                                  TRUE ~ 3)) %>%
-          dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
-          tidyr::fill(index1) %>%
-          dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
-          dplyr::mutate(id = LETTERS[replace(with(rle(index1),
-                                                  rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
-          dplyr::group_by(id) %>%
-          dplyr::summarise(sv = sum(cum)) %>%
-          dplyr::filter(!is.na(id)) %>%
-          dplyr::summarise(Sum = sum(sv)) %>%
-          dplyr::select(Sum) %>% 
-          dplyr::pull(Sum)
-        tot <- x %>%
-          dplyr::filter(waveforms == 99) %>%
-          dplyr::select(time) %>%
-          dplyr::distinct(time) %>% 
-          dplyr::pull(time)
-        out <- dplyr::tibble(res := 100 * tmp2 / (tot - tmp)) %>%
-            dplyr::rename(!!newname := res)
-       if(nrow(out) == 0){
-           out[1, 1] <- NA
-       }
-       return(out)
-    }
+ff95 <- function(x){
+    newname <- paste0("f95")
+      x$cum <- c(diff(x$time), x$time[length(x$time)])
+      tmp <- x %>%
+      dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                              waveforms %in% c(2, 99) ~ 0,
+                                              TRUE ~ 3)) %>%
+      dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+      tidyr::fill(index1) %>%
+      dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+      dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                              rep(cumsum(values), lengths)), index1 == 0, NA)]) %>% 
+      dplyr::filter(id == as.character(x %>%
+                                         dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                                                                 waveforms %in% c(2, 99) ~ 0,
+                                                                                 TRUE ~ 3)) %>%
+                                         dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+                                         tidyr::fill(index1) %>%
+                                         dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+                                         dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                                                                 rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+                                         dplyr::group_by(id) %>%
+                                         dplyr::summarise(sv = sum(cum)) %>%
+                                         dplyr::filter(!is.na(id),
+                                                       sv >= 600) %>% 
+                                         dplyr::select(id) %>% 
+                                         dplyr::slice(1))) %>%
+      dplyr::slice(1) %>% 
+      dplyr::pull(time)
+  if(length(tmp) != 0){
+    tmp2 <- x %>% filter(time >= tmp) %>% 
+      dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
+                                              waveforms %in% c(2, 99) ~ 0,
+                                              TRUE ~ 3)) %>%
+      dplyr::mutate(index1 = ifelse(index1 == 3, NA, index1)) %>%
+      tidyr::fill(index1) %>%
+      dplyr::mutate(index1 = ifelse(is.na(index1), 0, index1)) %>%
+      dplyr::mutate(id = LETTERS[replace(with(rle(index1),
+                                              rep(cumsum(values), lengths)), index1 == 0, NA)]) %>%
+      dplyr::group_by(id) %>%
+      dplyr::summarise(sv = sum(cum)) %>%
+      dplyr::filter(!is.na(id)) %>%
+      dplyr::summarise(Sum = sum(sv)) %>%
+#       dplyr::select(Sum) %>% 
+      dplyr::pull(Sum)
+    tot <- x %>%
+      dplyr::filter(waveforms == 99) %>%
+#       dplyr::select(time) %>%
+#       dplyr::distinct(time) %>% 
+      dplyr::pull(time)
+    out <- dplyr::tibble(res = 100 * tmp2 / (tot - tmp)) %>%
+        dplyr::rename(!!newname := res)
+  }
+  out <- dplyr::tibble(res = NA) %>%
+        dplyr::rename(!!newname := res)
+  return(out)
+}
         # % of probing time spent in 5
     ff119 <- function(x){
         newname <- paste0("f119")
         out <- tibble(ff91(x) / ff24(x) * 100) %>%
-          dplyr::rename(!!newname := f119)
+          dplyr::rename(!!newname := f91)
        if(nrow(out) == 0){
            out[1, 1] <- 0
        }
