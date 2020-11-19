@@ -361,17 +361,18 @@ ff95 <- function(x){
 #       dplyr::select(time) %>%
 #       dplyr::distinct(time) %>% 
       dplyr::pull(time)
-    out <- dplyr::tibble(res := 100 * tmp2 / (tot - tmp)) %>%
+    out <- dplyr::tibble(res = 100 * tmp2 / (tot - tmp)) %>%
         dplyr::rename(!!newname := res)
   }
-  out[1, 1] <- NA
+  out <- dplyr::tibble(res = NA) %>%
+        dplyr::rename(!!newname := res)
   return(out)
 }
         # % of probing time spent in 5
     ff119 <- function(x){
         newname <- paste0("f119")
         out <- tibble(ff91(x) / ff24(x) * 100) %>%
-          dplyr::rename(!!newname := f119)
+          dplyr::rename(!!newname := f91)
        if(nrow(out) == 0){
            out[1, 1] <- 0
        }
@@ -621,7 +622,7 @@ ff95 <- function(x){
       dplyr::mutate(f117 = purrr::map(data, ~ff115(.x, 7))) %>%
       dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
       dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
-      dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
+#       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
       dplyr::mutate(f190 = purrr::map(data, ~ff190(.x, 1))) %>%
       dplyr::mutate(f191 = purrr::map(data, ~ff190(.x, 3600))) %>%
       dplyr::mutate(f192 = purrr::map(data, ~ff190(.x, 7200))) %>%
