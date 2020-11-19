@@ -367,9 +367,10 @@ ff95 <- function(x){
       dplyr::pull(time)
     out <- dplyr::tibble(res = 100 * tmp2 / (tot - tmp)) %>%
         dplyr::rename(!!newname := res)
+  } else {
+     out <- dplyr::tibble(res = NA) %>%
+           dplyr::rename(!!newname := res)
   }
-  out <- dplyr::tibble(res = NA) %>%
-        dplyr::rename(!!newname := res)
   return(out)
 }
         # % of probing time spent in 5
