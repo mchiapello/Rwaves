@@ -279,7 +279,7 @@ rwaves <- function(x){
     ff150 <- function(x){
       newname <- paste0("f150")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
-      out <- x %>%
+      tmp <- x %>%
       dplyr::mutate(index1 = dplyr::case_when(waveforms == 5 ~ 1,
                                               waveforms %in% c(2, 99) ~ 0,
                                               TRUE ~ 3)) %>%
@@ -305,8 +305,15 @@ rwaves <- function(x){
                                          dplyr::slice(1))) %>%
       dplyr::slice(1) %>% 
       dplyr::pull(time)
-      if(nrow(out) == 0){
-        out[1, 1] <- x %>% filter(waveforms == 99) %>% distinct(time)
+      if(length(tmp) != 0){
+        out <- dplyr::tibble(res = tmp) %>%
+          dplyr::rename(!!newname := res)
+      } else {
+        tot <- x %>%
+          dplyr::filter(waveforms == 99) %>%
+          dplyr::pull(time)
+        out <- dplyr::tibble(res = tot) %>%
+            dplyr::rename(!!newname := res)
       }
       return(out)
     }
