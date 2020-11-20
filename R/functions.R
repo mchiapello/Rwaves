@@ -314,7 +314,7 @@ rwaves <- function(x){
         # Potential E2 index
     #The potential E2 index (van Helden & Tjallingii, 1993)
     #was calculated as the percentage of time spent in E2 by
-    #an aphid with any sE2, after reaching the ﬁrst sE2 #(anziché tmp si può mettere la ff150(x), ma al momento non ci riesco e smadonno)
+    #an aphid with any sE2, after reaching the ﬁrst sE2
 ff95 <- function(x){
     newname <- paste0("f95")
       x$cum <- c(diff(x$time), x$time[length(x$time)])
@@ -367,7 +367,7 @@ ff95 <- function(x){
       dplyr::pull(time)
     out <- dplyr::tibble(res = 100 * tmp2 / (tot - tmp)) %>%
         dplyr::rename(!!newname := res)
-  }
+  } else {
   out <- dplyr::tibble(res = NA) %>%
         dplyr::rename(!!newname := res)
   return(out)
@@ -627,6 +627,7 @@ ff95 <- function(x){
       dplyr::mutate(f118 = purrr::map(data, ~ff115(.x, 4))) %>%
       dplyr::mutate(f119 = purrr::map(data, ~ff119(.x))) %>%
       dplyr::mutate(f119E = purrr::map(data, ~ff119E(.x))) %>%
+      dplyr::mutate(f150 = purrr::map(data, ~ff150(.x))) %>%
       dplyr::mutate(f190 = purrr::map(data, ~ff190(.x, 1))) %>%
       dplyr::mutate(f191 = purrr::map(data, ~ff190(.x, 3600))) %>%
       dplyr::mutate(f192 = purrr::map(data, ~ff190(.x, 7200))) %>%
