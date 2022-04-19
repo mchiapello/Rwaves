@@ -1,3 +1,6 @@
+# Rwaves 0.0.7
+* Added new input method: tsv
+
 # Rwaves 0.0.5
 * Added 3 new functions
 
